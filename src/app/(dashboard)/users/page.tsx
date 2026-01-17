@@ -1,6 +1,7 @@
 import { fetchUsersTotalPages } from "@/actions/db/queries";
 import { AddButton } from "@/components/AddButton";
 import Pagination from "@/components/posts/all-posts/Paginations";
+import { UsersTableSkeleton } from "@/components/skeletons/users-table-skeleton";
 import { UsersSearchBar } from "@/components/users/users-searchbar";
 import { UsesTable } from "@/components/users/users-table";
 import { requireSession } from "@/lib/better-auth/server-auth";
@@ -32,15 +33,15 @@ export default async function UsersPage({
     <div className="p-4 md:px-8 h-full flex flex-col overflow-y-auto">
       <div className="p-4 flex justify-end">
         <UsersSearchBar />
-        <AddButton url="/posts/users/new" label="Add User" />
+        <AddButton url="/users/new" label="Add User" />
       </div>
-      <Suspense key={currentPage + term} fallback={<div>Loading...</div>}>
+      <Suspense key={currentPage + term} fallback={<UsersTableSkeleton />}>
         <UsesTable currentPage={currentPage} term={term} />
       </Suspense>
 
-      {/* <div className="flex items-center justify-center mt-6">
+      <div className="flex items-center justify-center mt-6">
         <Pagination totalPages={totalPages} />
-      </div> */}
+      </div>
     </div>
   );
 }
