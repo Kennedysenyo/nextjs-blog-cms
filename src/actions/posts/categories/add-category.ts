@@ -20,8 +20,8 @@ export const addCategory = async (
     }
 
     await sql`
-  INSERT INTO posts_categories (name, slug)
-  VALUES (${name}, ${slug});
+      INSERT INTO posts_categories (name, slug)
+      VALUES (${name}, ${slug});
 `;
 
     return null;

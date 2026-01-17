@@ -374,7 +374,7 @@ export const fetchCategoriesTotalPages = async (term: string) => {
     return Math.ceil(Number(result[0].total) / ITEMS_PER_PAGE);
   } catch (error) {
     console.error(error);
-    throw new Error("Error fetching post count");
+    throw new Error("Error fetching categories count");
   }
 };
 
@@ -450,4 +450,97 @@ export const fetchCategoryById = async (id: string) => {
     console.error(error as string);
     notFound();
   }
+};
+
+export const fetchUsersTotalPages = async (term: string) => {
+  try {
+    const conditions = [];
+
+    if (term?.trim()) {
+      conditions.push(sql`
+        (
+          "user".id::TEXT ILIKE ${`%${term}%`} OR
+          "user".name ILIKE ${`%${term}%`} OR
+          "user".email ILIKE ${`%${term}%`} OR
+          "user".role ILIKE ${`%${term}%`} 
+        )
+      `);
+    }
+
+    const where = conditions.length
+      ? sql`WHERE ${conditions.reduce(
+          (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
+          sql``
+        )}`
+      : sql``;
+
+    const result = await sql`
+      SELECT COUNT(*) AS total
+      FROM "user"
+      ${where};
+    `;
+
+    return Math.ceil(Number(result[0].total) / ITEMS_PER_PAGE);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching user count");
+  }
+};
+
+export const fetchUsersByFilter = async (currentPage: number, term: string) => {
+  try {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    const conditions = [];
+
+    if (term?.trim()) {
+      conditions.push(sql`
+        (
+          "user".id::TEXT ILIKE ${`%${term}%`} OR
+          "user".name ILIKE ${`%${term}%`} OR
+          "user".email ILIKE ${`%${term}%`} OR
+          "user".role ILIKE ${`%${term}%`}
+        )
+      `);
+    }
+
+    const where = conditions.length
+      ? sql`WHERE ${conditions.reduce(
+          (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
+          sql``
+        )}`
+      : sql``;
+
+    const result = await sql`
+      SELECT 
+        id,
+        name,
+        email,
+        role
+      FROM "user"
+      ${where}
+      ORDER BY "createdAt" DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+    `;
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching categories");
+  }
+};
+
+export const deleteUserById = async (id: string) => {
+  try {
+    const deletedPostId = await sql`
+    DELETE FROM user WHERE user.id = ${id} RETURNING id;`;
+    revalidatePath(`/users`);
+
+    return deletedPostId[0];
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+    console.error(error as string);
+  }
+  throw new Error("Failed to Delete User");
 };
