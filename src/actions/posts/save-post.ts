@@ -14,10 +14,10 @@ interface PostDataType {
   categoryId: string;
 }
 
-const baseUrl = process.env.BASE_URL;
+const baseUrl = process.env.PUBLIC_SITE_URL;
 if (!baseUrl) {
   throw new Error(
-    "BASE_URL environment variable is required to save new post!"
+    "PUBLIC_SITE_URL environment variable is required to save new post!"
   );
 }
 
