@@ -54,3 +54,16 @@ export interface CategoryFormResponseType {
   success: boolean;
   errorMessage: string | null;
 }
+
+export interface CreateUserFormErrors {
+  name?: string;
+  email?: string;
+  password?: string;
+  cnfrmPassword?: string;
+}
+
+export interface CreateUserFormResponseType {
+  errors: CreateUserFormErrors;
+  success: boolean;
+  errorMessage: string | null;
+}

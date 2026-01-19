@@ -1,56 +1,50 @@
 "use client";
 import { Save } from "lucide-react";
-import { Button } from "../../ui/button";
-import { Spinner } from "../../ui/spinner";
+
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 
-import { slugify } from "@/utils/slugify";
-
 import { useRouter } from "next/navigation";
-import { CategoryFormResponseType } from "@/types/types";
-import { createCategoryFormValidator } from "@/actions/posts/categories/create-category";
+import { CreateUserFormResponseType } from "@/types/types";
+import { Spinner } from "../ui/spinner";
+import { Button } from "../ui/button";
+import { createUserFormValidator } from "@/actions/users/add-form-validate";
 
 interface FormFields {
   name: string;
-  slug: string;
+  email: string;
+  password: string;
+  cnfrmPassword: string;
 }
 
-export const NewCategoryForm = () => {
+export const NewUserForm = () => {
   const router = useRouter();
 
   const [formData, setFormData] = useState<FormFields>({
     name: "",
-    slug: "",
+    email: "",
+    password: "",
+    cnfrmPassword: "",
   });
 
   const handleFormFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setFormData((prev) => {
-      const data =
-        name === "name"
-          ? {
-              ...prev,
-              ...{
-                name: value,
-                slug: slugify(value),
-              },
-            }
-          : { ...prev, [name]: value };
+      const data = { ...prev, [name]: value };
 
       // console.table(data);
       return data;
     });
   };
 
-  const initialState: CategoryFormResponseType = {
+  const initialState: CreateUserFormResponseType = {
     errors: {},
     success: false,
     errorMessage: null,
   };
 
   const [state, formAction, isPending] = useActionState(
-    createCategoryFormValidator,
+    createUserFormValidator,
     initialState
   );
 
@@ -58,9 +52,11 @@ export const NewCategoryForm = () => {
     if (state.success) {
       setFormData({
         name: "",
-        slug: "",
+        email: "",
+        password: "",
+        cnfrmPassword: "",
       });
-      router.push(`/posts/categories`);
+      router.push(`/users`);
     }
   }, [state, router]);
 
@@ -69,7 +65,7 @@ export const NewCategoryForm = () => {
       <div className="bg-sidebar rounded-md shadow-md p-2 md:p-4 border border-gray-100 mx-auto flex flex-col h-full  sm:max-w-[900px]">
         <div className="relative flex items-center mb-2">
           <h3 className="text-2xl font-serif font-bold text-brand-blue">
-            New Category
+            New User
           </h3>
 
           {state.errorMessage && (
@@ -97,7 +93,7 @@ export const NewCategoryForm = () => {
                   type="text"
                   name="name"
                   autoComplete="off"
-                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
                   value={formData.name}
                   onChange={handleFormFieldChange}
                 />
@@ -110,23 +106,67 @@ export const NewCategoryForm = () => {
 
               <div>
                 <label
-                  htmlFor="slug"
+                  htmlFor="email"
                   className="text-sm font-semibold text-brand-blue"
                 >
-                  Slug
+                  Email
                 </label>
                 <input
-                  id="slug"
-                  type="text"
-                  name="slug"
+                  id="email"
+                  type="email"
+                  name="email"
                   autoComplete="off"
-                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
-                  value={formData.slug}
+                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  value={formData.email}
                   onChange={handleFormFieldChange}
                 />
-                {state.errors.slug && (
+                {state.errors.email && (
                   <small className="text-xs text-red-500">
-                    {state.errors.slug}
+                    {state.errors.email}
+                  </small>
+                )}
+              </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="text-sm font-semibold text-brand-blue"
+                >
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  name="password"
+                  autoComplete="off"
+                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  value={formData.password}
+                  onChange={handleFormFieldChange}
+                />
+                {state.errors.password && (
+                  <small className="text-xs text-red-500">
+                    {state.errors.password}
+                  </small>
+                )}
+              </div>
+              <div>
+                <label
+                  htmlFor="cnfrmPassword"
+                  className="text-sm font-semibold text-brand-blue"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  id="cnfrmPassword"
+                  type="password"
+                  name="cnfrmPassword"
+                  autoComplete="off"
+                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
+                  value={formData.cnfrmPassword}
+                  onChange={handleFormFieldChange}
+                />
+                {state.errors.cnfrmPassword && (
+                  <small className="text-xs text-red-500">
+                    {state.errors.cnfrmPassword}
                   </small>
                 )}
               </div>

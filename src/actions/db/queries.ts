@@ -462,10 +462,15 @@ export const fetchUsersTotalPages = async (term: string) => {
           "user".id::TEXT ILIKE ${`%${term}%`} OR
           "user".name ILIKE ${`%${term}%`} OR
           "user".email ILIKE ${`%${term}%`} OR
-          "user".role ILIKE ${`%${term}%`} 
+          "user".role ILIKE ${`%${term}%`} OR
+          
         )
       `);
     }
+
+    // if (status) {
+
+    // }
 
     const where = conditions.length
       ? sql`WHERE ${conditions.reduce(
