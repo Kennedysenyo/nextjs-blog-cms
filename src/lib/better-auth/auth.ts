@@ -1,25 +1,13 @@
 import { sendEmail } from "@/actions/emails/email-verification";
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
-import { Pool } from "pg";
-
-const dbURL = process.env.DATABASE_URL;
-
-if (!dbURL) {
-  throw new Error(
-    "DATABASE_URL environment variable is required to connect to db!"
-  );
-}
-
-const pool = new Pool({
-  connectionString: dbURL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "@/db/db";
 
 export const auth = betterAuth({
-  database: pool,
+  database: drizzleAdapter(db, {
+    provider: "sqlite",
+  }),
 
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
