@@ -1,7 +1,7 @@
 "use server";
 
 import { requireSession } from "@/lib/better-auth/server-auth";
-import { sql } from "../../../db/db";
+import { sql } from "../../../db/old-manual-migrations/db";
 
 interface MetaData {
   id: string;
@@ -11,7 +11,7 @@ interface MetaData {
 }
 
 export const saveMetaData = async (
-  metadata: MetaData
+  metadata: MetaData,
 ): Promise<string | null> => {
   try {
     const session = await requireSession();

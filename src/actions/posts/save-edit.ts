@@ -2,11 +2,11 @@
 
 import { requireSession } from "@/lib/better-auth/server-auth";
 import { PostDataType } from "@/types/types";
-import { sql } from "../../../db/db";
+import { sql } from "../../../db/old-manual-migrations/db";
 
 export const saveEdit = async (
   postId: string,
-  data: PostDataType
+  data: PostDataType,
 ): Promise<string | null> => {
   try {
     const session = await requireSession();

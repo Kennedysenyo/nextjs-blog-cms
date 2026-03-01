@@ -1,7 +1,7 @@
 "use server";
 
 import { requireSession } from "@/lib/better-auth/server-auth";
-import { sql } from "../../../db/db";
+import { sql } from "../../../db/old-manual-migrations/db";
 import { handleError } from "@/utils/handle-error";
 import { ReturnedData } from "@/types/types";
 
@@ -17,7 +17,7 @@ interface PostDataType {
 const baseUrl = process.env.BASE_URL;
 if (!baseUrl) {
   throw new Error(
-    "BASE_URL environment variable is required to save new post!"
+    "BASE_URL environment variable is required to save new post!",
   );
 }
 

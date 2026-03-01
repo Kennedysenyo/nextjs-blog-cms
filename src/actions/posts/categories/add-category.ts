@@ -1,12 +1,12 @@
 "use server";
 
 import { requireSession } from "@/lib/better-auth/server-auth";
-import { sql } from "../../../../db/db";
+import { sql } from "../../../../db/old-manual-migrations/db";
 import { redirect } from "next/navigation";
 
 export const addCategory = async (
   name: string,
-  slug: string
+  slug: string,
 ): Promise<string | null> => {
   try {
     const session = await requireSession();

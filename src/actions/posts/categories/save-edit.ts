@@ -2,12 +2,12 @@
 
 import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";
-import { sql } from "../../../../db/db";
+import { sql } from "../../../../db/old-manual-migrations/db";
 
 export const saveCategoryEdit = async (
   id: string,
   name: string,
-  slug: string
+  slug: string,
 ) => {
   try {
     const session = await requireSession();

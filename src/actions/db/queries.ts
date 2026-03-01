@@ -1,7 +1,7 @@
 "use server";
 
 import { notFound } from "next/navigation";
-import { sql } from "../../../db/db";
+import { sql } from "../../../db/old-manual-migrations/db";
 import { revalidatePath } from "next/cache";
 
 export const fetchCategories = async () => {
@@ -57,7 +57,7 @@ export const fetchPostStatus = async (id: string) => {
 };
 
 export const setPostStatusToPublish = async (
-  id: string
+  id: string,
 ): Promise<string | null> => {
   try {
     await sql.begin(async (tx) => {
@@ -86,7 +86,7 @@ export const setPostStatusToPublish = async (
 };
 
 export const setPostStatusToArchive = async (
-  id: string
+  id: string,
 ): Promise<string | null> => {
   try {
     await sql.begin(async (tx) => {
@@ -119,7 +119,7 @@ export const setPostStatusToArchive = async (
 // | `published` | `index, follow`     |
 // | `archived`  | `noindex, follow`   |
 export const setPostStatusToDraft = async (
-  id: string
+  id: string,
 ): Promise<string | null> => {
   try {
     await sql.begin(async (tx) => {
@@ -200,7 +200,7 @@ const ITEMS_PER_PAGE = 10;
 export const fetchPostsTotalPages = async (
   term: string,
   category: string,
-  status: string
+  status: string,
 ) => {
   try {
     const conditions = [];
@@ -232,7 +232,7 @@ export const fetchPostsTotalPages = async (
     const where = conditions.length
       ? sql`WHERE ${conditions.reduce(
           (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
-          sql``
+          sql``,
         )}`
       : sql``;
 
@@ -252,7 +252,7 @@ export const fetchPostsTotalPages = async (
 export const fetchCategoriesAndPostsTotalPages = async (
   term: string,
   category: string,
-  status: string
+  status: string,
 ) => {
   const [totalPages, categories] = await Promise.all([
     fetchPostsTotalPages(term, category, status),
@@ -269,7 +269,7 @@ export const fetchPostsByFilter = async (
   currentPage: number,
   term: string,
   category: string,
-  status: string
+  status: string,
 ) => {
   try {
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -302,7 +302,7 @@ export const fetchPostsByFilter = async (
     const where = conditions.length
       ? sql`WHERE ${conditions.reduce(
           (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
-          sql``
+          sql``,
         )}`
       : sql``;
 
@@ -361,7 +361,7 @@ export const fetchCategoriesTotalPages = async (term: string) => {
     const where = conditions.length
       ? sql`WHERE ${conditions.reduce(
           (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
-          sql``
+          sql``,
         )}`
       : sql``;
 
@@ -380,7 +380,7 @@ export const fetchCategoriesTotalPages = async (term: string) => {
 
 export const fetchCategoriesByFilter = async (
   currentPage: number,
-  term: string
+  term: string,
 ) => {
   try {
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -399,7 +399,7 @@ export const fetchCategoriesByFilter = async (
     const where = conditions.length
       ? sql`WHERE ${conditions.reduce(
           (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
-          sql``
+          sql``,
         )}`
       : sql``;
 
@@ -475,7 +475,7 @@ export const fetchUsersTotalPages = async (term: string) => {
     const where = conditions.length
       ? sql`WHERE ${conditions.reduce(
           (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
-          sql``
+          sql``,
         )}`
       : sql``;
 
@@ -511,7 +511,7 @@ export const fetchUsersByFilter = async (currentPage: number, term: string) => {
     const where = conditions.length
       ? sql`WHERE ${conditions.reduce(
           (acc, curr, i) => (i === 0 ? curr : sql`${acc} AND ${curr}`),
-          sql``
+          sql``,
         )}`
       : sql``;
 

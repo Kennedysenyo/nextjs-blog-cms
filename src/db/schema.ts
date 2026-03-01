@@ -222,3 +222,8 @@ export const postSeoTable = sqliteTable(
     ),
   ],
 );
+
+export const user = userTable;
+export const session = userSessionTable;
+export const account = accountTable;
+export const verification = userVerificationTable;
