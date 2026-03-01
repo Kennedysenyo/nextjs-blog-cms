@@ -25,15 +25,19 @@ export const userTable = sqliteTable(
       (): AnySQLiteColumn => userTable.id,
       { onDelete: "set null" },
     ),
-    createdAt: integer({ mode: "timestamp" }).default(sql`(unixepoch())`),
-    updatedAt: integer({ mode: "timestamp" }).default(sql`(unixepoch())`),
+    createdAt: integer({ mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    updatedAt: integer({ mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
   },
   (table) => [
     check("user_role_check", sql`${table.role} IN ('user', 'admin')`),
   ],
 );
 
-const accountTable = sqliteTable("account", {
+export const accountTable = sqliteTable("account", {
   id: text().primaryKey().notNull(),
   accountId: text("accountId").notNull(),
   providerId: text("providerId").notNull(),
