@@ -210,7 +210,7 @@ export const postSeoTable = sqliteTable(
   (table) => [
     check(
       "post_seo_ogType_check",
-      sql`${table.ogType} IN ('articel','website','profile')`,
+      sql`${table.ogType} IN ('article','website','profile')`,
     ),
     check(
       "post_seo_robots_check",
@@ -218,7 +218,7 @@ export const postSeoTable = sqliteTable(
     ),
     check(
       "post_seo_twitterCard_check",
-      sql`${table.twitterCard} IN ('summary', 'summary_large', 'app', 'player')`,
+      sql`${table.twitterCard} IN ('summary', 'summary_large_image', 'app', 'player')`,
     ),
   ],
 );
