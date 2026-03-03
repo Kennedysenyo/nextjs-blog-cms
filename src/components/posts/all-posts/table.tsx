@@ -31,7 +31,7 @@ export const PostTable = async ({
     Number(currentPage),
     term,
     category,
-    status
+    status,
   );
   return (
     <>
@@ -54,7 +54,7 @@ export const PostTable = async ({
               <TableRow key={post.id}>
                 <TableCell className="font-medium">{post.id}</TableCell>
                 <TableCell>{post.title}</TableCell>
-                <TableCell>{capitalizeFirstLetter(post.category)}</TableCell>
+                <TableCell>{capitalizeFirstLetter(post.category!)}</TableCell>
                 <TableCell>{capitalizeFirstLetter(post.status)}</TableCell>
                 <TableCell className="text-right">
                   <DropDown id={post.id} />
@@ -82,7 +82,7 @@ export const PostTable = async ({
                 <span className="bg-sidebar font-semibold p-1 mr-2">
                   Category:
                 </span>
-                {capitalizeFirstLetter(post.category)}
+                {capitalizeFirstLetter(post.category!)}
               </p>
               <p className="bg-white py-1 border-b border-gray-100 truncate">
                 <span className="bg-sidebar font-semibold p-1 mr-2">

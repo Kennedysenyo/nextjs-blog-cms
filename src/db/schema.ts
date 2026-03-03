@@ -6,6 +6,7 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
+import { InferInsertModel } from "drizzle-orm";
 
 export const userTable = sqliteTable(
   "user",
@@ -227,3 +228,5 @@ export const user = userTable;
 export const session = userSessionTable;
 export const account = accountTable;
 export const verification = userVerificationTable;
+
+export type PostType = InferInsertModel<typeof postTable>;

@@ -3,14 +3,11 @@ import { Save } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
-
 import { slugify } from "@/utils/slugify";
-
 import { useRouter } from "next/navigation";
-import { CategoryFormResponseType } from "@/types/types";
-import { createCategoryFormValidator } from "@/actions/posts/categories/create-category";
 import postgres from "postgres";
-import { editCategoryFormValidator } from "@/actions/posts/categories/edit-category";
+import { UpdateCategoryFormResponseType } from "@/features/categories/categories.types";
+import { validateEditCategoryForm } from "@/features/categories/categories.service";
 
 interface FormFields {
   name: string;
@@ -49,15 +46,15 @@ export const EditCategoryForm = ({ category }: Props) => {
     });
   };
 
-  const initialState: CategoryFormResponseType = {
+  const initialState: UpdateCategoryFormResponseType = {
     errors: {},
     success: false,
     errorMessage: null,
   };
 
   const [state, formAction, isPending] = useActionState(
-    editCategoryFormValidator.bind(null, category.id),
-    initialState
+    validateEditCategoryForm.bind(null, category.id),
+    initialState,
   );
 
   useEffect(() => {

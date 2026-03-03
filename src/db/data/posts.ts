@@ -1,7 +1,4 @@
-import { InferInsertModel } from "drizzle-orm";
-import { postTable } from "../schema";
-
-type PostType = InferInsertModel<typeof postTable>;
+import { PostType } from "../schema";
 
 export const posts: PostType[] = [
   {

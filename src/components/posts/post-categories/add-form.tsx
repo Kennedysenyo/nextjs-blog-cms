@@ -7,8 +7,8 @@ import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { slugify } from "@/utils/slugify";
 
 import { useRouter } from "next/navigation";
-import { CategoryFormResponseType } from "@/types/types";
-import { createCategoryFormValidator } from "@/actions/posts/categories/create-category";
+import { CategoryFormResponseType } from "@/features/categories/categories.types";
+import { validateCreateCategoryForm } from "@/features/categories/categories.service";
 
 interface FormFields {
   name: string;
@@ -50,8 +50,8 @@ export const NewCategoryForm = () => {
   };
 
   const [state, formAction, isPending] = useActionState(
-    createCategoryFormValidator,
-    initialState
+    validateCreateCategoryForm,
+    initialState,
   );
 
   useEffect(() => {

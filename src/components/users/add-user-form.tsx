@@ -4,26 +4,22 @@ import { Save } from "lucide-react";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
-import { CreateUserFormResponseType } from "@/types/types";
 import { Spinner } from "../ui/spinner";
 import { Button } from "../ui/button";
-import { createUserFormValidator } from "@/actions/users/add-form-validate";
-
-interface FormFields {
-  name: string;
-  email: string;
-  password: string;
-  cnfrmPassword: string;
-}
+import {
+  CreateUserFormResponseType,
+  CreateUserFormType,
+} from "@/features/users/users.types";
+import { validateCreateUserForm } from "@/features/users/users.service";
 
 export const NewUserForm = () => {
   const router = useRouter();
 
-  const [formData, setFormData] = useState<FormFields>({
+  const [formData, setFormData] = useState<CreateUserFormType>({
     name: "",
     email: "",
     password: "",
-    cnfrmPassword: "",
+    confirmPassword: "",
   });
 
   const handleFormFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -44,8 +40,8 @@ export const NewUserForm = () => {
   };
 
   const [state, formAction, isPending] = useActionState(
-    createUserFormValidator,
-    initialState
+    validateCreateUserForm,
+    initialState,
   );
 
   useEffect(() => {
@@ -54,7 +50,7 @@ export const NewUserForm = () => {
         name: "",
         email: "",
         password: "",
-        cnfrmPassword: "",
+        confirmPassword: "",
       });
       router.push(`/users`);
     }
@@ -150,23 +146,23 @@ export const NewUserForm = () => {
               </div>
               <div>
                 <label
-                  htmlFor="cnfrmPassword"
+                  htmlFor="confirmPassword"
                   className="text-sm font-semibold text-brand-blue"
                 >
                   Confirm Password
                 </label>
                 <input
-                  id="cnfrmPassword"
+                  id="confirmPassword"
                   type="password"
-                  name="cnfrmPassword"
+                  name="confirmPassword"
                   autoComplete="off"
                   className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
-                  value={formData.cnfrmPassword}
+                  value={formData.confirmPassword}
                   onChange={handleFormFieldChange}
                 />
-                {state.errors.cnfrmPassword && (
+                {state.errors.confirmPassword && (
                   <small className="text-xs text-red-500">
-                    {state.errors.cnfrmPassword}
+                    {state.errors.confirmPassword}
                   </small>
                 )}
               </div>

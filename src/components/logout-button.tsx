@@ -2,8 +2,9 @@
 
 import { useTransition } from "react";
 import { Spinner } from "./ui/spinner";
-import { logOut } from "@/actions/auth/logout";
+
 import { LogOut } from "lucide-react";
+import { logOut } from "@/features/auth/auth.service";
 
 function LogOutButton() {
   const [isPending, startTransition] = useTransition();

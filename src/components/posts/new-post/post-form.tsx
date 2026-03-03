@@ -5,22 +5,16 @@ import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { MarkdownEditor } from "./markdown-editor";
 import { ImageUploader } from "./image-uploader";
-import { postFormValidator } from "@/actions/posts/post-form-validator";
 import { slugify } from "@/utils/slugify";
 import postgres from "postgres";
 import { capitalizeText } from "@/utils/capitalize-text";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ResponseType } from "@/types/types";
-
-interface FormFields {
-  title: string;
-  slug: string;
-  content: string | undefined;
-  excerpt: string;
-  category: string;
-  featuredImage: string;
-}
+import {
+  CreatePostInput,
+  CreatePostInputResponseType,
+} from "@/features/posts/posts.types";
+import { validateCreatePostForm } from "@/features/posts/posts.service";
 
 interface Props {
   categories: postgres.RowList<postgres.Row[]>;
@@ -32,12 +26,12 @@ export const NewPostForm = ({ categories }: Props) => {
     useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [formData, setFormData] = useState<FormFields>({
+  const [formData, setFormData] = useState<CreatePostInput>({
     title: "",
     slug: "",
-    content: undefined,
+    contentMd: "",
     excerpt: "",
-    category: "",
+    categoryId: "",
     featuredImage: "",
   });
 
@@ -45,7 +39,7 @@ export const NewPostForm = ({ categories }: Props) => {
     e:
       | ChangeEvent<HTMLInputElement>
       | ChangeEvent<HTMLTextAreaElement>
-      | ChangeEvent<HTMLSelectElement>
+      | ChangeEvent<HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -122,15 +116,15 @@ export const NewPostForm = ({ categories }: Props) => {
     }
   };
 
-  const initialState: ResponseType = {
+  const initialState: CreatePostInputResponseType = {
     errors: {},
     success: false,
     returned: { postId: null, errorMessage: null },
   };
 
   const [state, formAction, isPending] = useActionState(
-    postFormValidator,
-    initialState
+    validateCreatePostForm,
+    initialState,
   );
 
   useEffect(() => {
@@ -144,9 +138,9 @@ export const NewPostForm = ({ categories }: Props) => {
       setFormData({
         title: "",
         slug: "",
-        content: undefined,
+        contentMd: "",
         excerpt: "",
-        category: "",
+        categoryId: "",
         featuredImage: "",
       });
       router.push(`/posts/${state.returned.postId}/preview`);
@@ -226,25 +220,25 @@ export const NewPostForm = ({ categories }: Props) => {
 
               <div>
                 <label
-                  htmlFor="content"
+                  htmlFor="contentMd"
                   className="text-sm font-semibold text-brand-blue"
                 >
                   Content (Markdown)
                 </label>
                 <MarkdownEditor
-                  value={formData.content}
+                  value={formData.contentMd}
                   setValue={setValue}
                   height={400}
                 />
                 <textarea
                   className="hidden"
-                  id="content"
-                  name="content"
-                  defaultValue={formData.content}
+                  id="contentMd"
+                  name="contentMd"
+                  defaultValue={formData.contentMd}
                 ></textarea>
-                {state.errors.content && (
+                {state.errors.contentMd && (
                   <small className="text-xs text-red-500">
-                    {state.errors.content}
+                    {state.errors.contentMd}
                   </small>
                 )}
               </div>
@@ -277,7 +271,7 @@ export const NewPostForm = ({ categories }: Props) => {
                       className={cn(
                         "text-green-500",
                         formData.excerpt.length > 160 && "text-red-500",
-                        formData.excerpt.length < 120 && "text-yellow-500"
+                        formData.excerpt.length < 120 && "text-yellow-500",
                       )}
                     >
                       {formData.excerpt.length}
@@ -308,16 +302,16 @@ export const NewPostForm = ({ categories }: Props) => {
 
               <div>
                 <label
-                  htmlFor="category"
+                  htmlFor="categoryId"
                   className="text-sm font-semibold text-brand-blue"
                 >
                   Category
                 </label>
                 <select
-                  id="category"
-                  name="category"
+                  id="categoryId"
+                  name="categoryId"
                   className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all bgsidebar invalid:text-gray-100"
-                  value={formData.category}
+                  value={formData.categoryId}
                   onChange={handleFormFieldChange}
                 >
                   <option disabled hidden value="">
@@ -329,9 +323,9 @@ export const NewPostForm = ({ categories }: Props) => {
                     </option>
                   ))}
                 </select>
-                {state.errors.category && (
+                {state.errors.categoryId && (
                   <small className="text-xs text-red-500">
-                    {state.errors.category}
+                    {state.errors.categoryId}
                   </small>
                 )}
               </div>
