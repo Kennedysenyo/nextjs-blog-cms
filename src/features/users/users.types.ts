@@ -1,5 +1,10 @@
 import z from "zod";
-import { createUserInsertSchema, updateUserInsertSchema } from "./users.schema";
+import {
+  createUserInsertSchema,
+  updateUserInsertAdminSchema,
+} from "./users.schema";
+import { InferSelectModel } from "drizzle-orm";
+import { userTable } from "@/db/schema";
 
 export type CreateUserFormType = z.infer<typeof createUserInsertSchema>;
 export type CreateUserInserType = Omit<CreateUserFormType, "confirmPassword">;
@@ -14,4 +19,24 @@ export interface CreateUserFormResponseType {
   errorMessage: string | null;
 }
 
-export type UpdateUserFormType = z.infer<typeof updateUserInsertSchema>;
+export type AdminUpdateUserInsertType = z.infer<
+  typeof updateUserInsertAdminSchema
+>;
+export type AdminUpdateUserFormErrors = Partial<
+  Record<keyof AdminUpdateUserInsertType, string>
+>;
+
+export interface AdminUpdateUserFormResponseType {
+  errors: AdminUpdateUserFormErrors;
+  success: boolean;
+  errorMessage: string | null;
+}
+
+// Select
+
+type UserSelectType = InferSelectModel<typeof userTable>;
+
+export type SelectUserAdminEdit = Pick<
+  UserSelectType,
+  "id" | "name" | "email" | "role"
+>;

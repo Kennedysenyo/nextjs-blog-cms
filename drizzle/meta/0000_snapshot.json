@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "2ddc4e0c-60fe-4153-852c-1a81fbe1f8f3",
+  "id": "e0273c5e-f120-4571-8f9d-2f842155b559",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -696,7 +696,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "(unixepoch())"
+          "default": "null"
         },
         "isActive": {
           "name": "isActive",
@@ -763,7 +763,7 @@
         },
         "user_ban_reason_check": {
           "name": "user_ban_reason_check",
-          "value": "\"user\".\"banned\" = 'true' AND \"user\".\"banReason\" IS NOT NULL"
+          "value": "(\n      \"user\".\"banned\" = 'true' AND \n      \"user\".\"banReason\" IS NOT NULL\n      ) OR (\n       \"user\".\"banned\" = false AND \n       \"user\".\"banReason\" IS NULL\n       )"
         }
       }
     },

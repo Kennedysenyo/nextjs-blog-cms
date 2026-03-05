@@ -5,23 +5,20 @@ import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { slugify } from "@/utils/slugify";
 import { useRouter } from "next/navigation";
-import postgres from "postgres";
-import { UpdateCategoryFormResponseType } from "@/features/categories/categories.types";
+import {
+  UpdateCategoryFormResponseType,
+  UpdateCategoryType,
+} from "@/features/categories/categories.types";
 import { validateEditCategoryForm } from "@/features/categories/categories.service";
 
-interface FormFields {
-  name: string;
-  slug: string;
-}
-
 interface Props {
-  category: postgres.Row;
+  category: UpdateCategoryType;
 }
 
 export const EditCategoryForm = ({ category }: Props) => {
   const router = useRouter();
 
-  const [formData, setFormData] = useState<FormFields>({
+  const [formData, setFormData] = useState<Omit<UpdateCategoryType, "id">>({
     name: category.name,
     slug: category.slug,
   });

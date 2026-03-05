@@ -170,7 +170,9 @@ export const NewUserForm = () => {
               </div>
               <div>
                 <fieldset className="border border-gray-200 p-2 flex gap-4">
-                  <legend>Set User Role:</legend>
+                  <legend className="text-sm font-semibold text-brand-blue">
+                    Set User Role:
+                  </legend>
                   <div className="flex items-center gap-2">
                     <label htmlFor="user">User</label>
                     <input

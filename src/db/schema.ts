@@ -22,9 +22,7 @@ export const userTable = sqliteTable(
       .notNull(),
     banned: integer("banned", { mode: "boolean" }).notNull().default(false),
     banReason: text("banReason"),
-    banExpires: integer("banExpires", { mode: "timestamp" }).default(
-      sql`(unixepoch())`,
-    ),
+    banExpires: integer("banExpires", { mode: "timestamp" }).default(sql`null`),
     isActive: integer("isActive", { mode: "boolean" }).notNull().default(true),
     createdBy: text("createdBy").references(
       (): AnySQLiteColumn => userTable.id,

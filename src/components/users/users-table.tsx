@@ -107,7 +107,7 @@ export const UsesTable = async ({ currentPage, term }: Props) => {
                   size="sm"
                   className="bg-brand-blue hover:bg-brand-blue/90"
                 >
-                  <Link href={`/posts/categories/${user.id}/edit`}>
+                  <Link href={`/users/${user.id}/edit`}>
                     <FilePen className="size-4 text-white" />
                   </Link>
                 </Button>

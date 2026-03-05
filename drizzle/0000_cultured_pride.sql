@@ -116,14 +116,20 @@ CREATE TABLE `user` (
 	`role` text DEFAULT 'user' NOT NULL,
 	`banned` integer DEFAULT false NOT NULL,
 	`banReason` text,
-	`banExpires` integer DEFAULT (unixepoch()),
+	`banExpires` integer DEFAULT null,
 	`isActive` integer DEFAULT true NOT NULL,
 	`createdBy` text,
 	`createdAt` integer DEFAULT (unixepoch()) NOT NULL,
 	`updatedAt` integer DEFAULT (unixepoch()) NOT NULL,
 	FOREIGN KEY (`createdBy`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE set null,
 	CONSTRAINT "user_role_check" CHECK("user"."role" IN ('user', 'admin', 'editor')),
-	CONSTRAINT "user_ban_reason_check" CHECK("user"."banned" = 'true' AND "user"."banReason" IS NOT NULL)
+	CONSTRAINT "user_ban_reason_check" CHECK((
+      "user"."banned" = 'true' AND 
+      "user"."banReason" IS NOT NULL
+      ) OR (
+       "user"."banned" = false AND 
+       "user"."banReason" IS NULL
+       ))
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);--> statement-breakpoint

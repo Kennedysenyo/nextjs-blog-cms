@@ -38,6 +38,7 @@ export const auth = betterAuth({
         user: userRole,
       },
       adminRoles: ["admin"],
+      adminUserIds: ["W8rqu1pphWDsetczc2A5VIxN4m65yDFk"],
     }),
   ],
 });

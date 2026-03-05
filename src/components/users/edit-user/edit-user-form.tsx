@@ -6,22 +6,25 @@ import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import {
-  CreateUserFormResponseType,
-  UpdateUserFormType,
+  AdminUpdateUserInsertType,
+  AdminUpdateUserFormResponseType,
+  SelectUserAdminEdit,
 } from "@/features/users/users.types";
-import { validateCreateUserForm } from "@/features/users/users.service";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { validateAdminUpdateUserForm } from "@/features/users/users.service";
 
-export const EditUserForm = () => {
+interface Props {
+  user: SelectUserAdminEdit;
+}
+
+export const EditUserForm = ({ user }: Props) => {
   const router = useRouter();
 
-  const [formData, setFormData] = useState<UpdateUserFormType>({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "user",
+  const [formData, setFormData] = useState<AdminUpdateUserInsertType>({
+    name: user.name,
+    email: user.email,
+    role: user.role,
   });
 
   const handleFormFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,14 +38,14 @@ export const EditUserForm = () => {
     });
   };
 
-  const initialState: CreateUserFormResponseType = {
+  const initialState: AdminUpdateUserFormResponseType = {
     errors: {},
     success: false,
     errorMessage: null,
   };
 
   const [state, formAction, isPending] = useActionState(
-    validateCreateUserForm,
+    validateAdminUpdateUserForm.bind(null, user.id),
     initialState,
   );
 
@@ -57,7 +60,7 @@ export const EditUserForm = () => {
       <div className="bg-sidebar rounded-md shadow-md p-2 md:p-4 border border-gray-100 mx-auto flex flex-col h-full  sm:max-w-[900px]">
         <div className="relative flex items-center mb-2">
           <h3 className="text-2xl font-serif font-bold text-brand-blue">
-            New User
+            Update User
           </h3>
 
           {state.errorMessage && (
@@ -118,63 +121,53 @@ export const EditUserForm = () => {
                   </small>
                 )}
               </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="text-sm font-semibold text-brand-blue"
-                >
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  name="password"
-                  autoComplete="off"
-                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
-                  value={formData.password}
-                  onChange={handleFormFieldChange}
-                />
-                {state.errors.password && (
-                  <small className="text-xs text-red-500">
-                    {state.errors.password}
-                  </small>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="text-sm font-semibold text-brand-blue"
-                >
-                  Confirm Password
-                </label>
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  name="confirmPassword"
-                  autoComplete="off"
-                  className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
-                  value={formData.confirmPassword}
-                  onChange={handleFormFieldChange}
-                />
-                {state.errors.confirmPassword && (
-                  <small className="text-xs text-red-500">
-                    {state.errors.confirmPassword}
-                  </small>
-                )}
-              </div>
+
               <div>
                 <fieldset className="border border-gray-200 p-2 flex gap-4">
-                  <legend>Set User Role:</legend>
+                  <legend className="text-sm font-semibold text-brand-blue">
+                    Set User Role:
+                  </legend>
                   <div className="flex items-center gap-2">
                     <label htmlFor="user">User</label>
-                    <input type="radio" id="user" name="role"></input>
+                    <input
+                      type="radio"
+                      id="user"
+                      name="role"
+                      value="user"
+                      checked={formData.role === "user"}
+                      onChange={handleFormFieldChange}
+                    ></input>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="editor">Editor</label>
+
+                    <input
+                      type="radio"
+                      id="editor"
+                      name="role"
+                      value="editor"
+                      checked={formData.role === "editor"}
+                      onChange={handleFormFieldChange}
+                    ></input>
                   </div>
                   <div className="flex items-center gap-2">
                     <label htmlFor="admin">Admin</label>
 
-                    <input type="radio" id="admin" name="role"></input>
+                    <input
+                      type="radio"
+                      id="admin"
+                      name="role"
+                      value={"admin"}
+                      checked={formData.role === "admin"}
+                      onChange={handleFormFieldChange}
+                    ></input>
                   </div>
                 </fieldset>
+                {state.errors.role && (
+                  <small className="text-xs text-red-500">
+                    {state.errors.role}
+                  </small>
+                )}
               </div>
             </div>
           </div>

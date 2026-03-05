@@ -37,4 +37,23 @@ export const createUserInsertSchema = insertUserSchema
     path: ["confirmPassword"],
   });
 
-export const updateUserInsertSchema = createUserInsertSchema;
+export const updateUserInsertAdminSchema = insertUserSchema
+  .pick({
+    name: true,
+    email: true,
+    role: true,
+  })
+  .extend({
+    name: z.string().min(3, {
+      error: (iss) =>
+        iss.input?.length === 0
+          ? "Name is required"
+          : "Name must be > 3 characters",
+    }),
+    email: z.email(),
+    role: z.enum(["user", "admin", "editor"]),
+  });
+
+export const updateUserInsertUserSchema = insertUserSchema.pick({
+  name: true,
+});

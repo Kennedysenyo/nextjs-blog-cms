@@ -11,8 +11,6 @@ import {
   userTable,
 } from "@/db/schema";
 import { count, eq, ilike, sql, SQL } from "drizzle-orm";
-import { id } from "zod/v4/locales";
-import { PostDataType } from "@/types/types";
 
 export const fetchCategories = async () => {
   try {
@@ -631,11 +629,6 @@ export const deleteCategoryById = async (id: string) => {
 
 export const fetchCategoryById = async (id: string) => {
   try {
-    // const category = await sqll`
-    //   SELECT id, name, slug FROM posts_categories WHERE id = ${id}
-    // `;
-    // return category[0];
-
     const [category] = await db
       .select({
         id: postsCategoriesTable.id,

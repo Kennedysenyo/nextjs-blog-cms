@@ -17,11 +17,10 @@ const login = async (
   password: string,
 ): Promise<string | null> => {
   try {
-    const result = await auth.api.signInEmail({
+    await auth.api.signInEmail({
       body: { email, password, rememberMe: true },
       headers: await headers(),
     });
-    console.log(result);
 
     return null;
   } catch (error) {

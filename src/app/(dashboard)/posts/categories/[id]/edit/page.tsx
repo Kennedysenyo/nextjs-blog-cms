@@ -3,6 +3,7 @@ import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";
 import { fetchCategoryById } from "@/actions/db/queries";
 import { EditCategoryForm } from "@/components/posts/post-categories/edit-form";
+import { UpdateCategoryType } from "@/features/categories/categories.types";
 
 export default async function EditCategoryPage({
   params,
@@ -46,7 +47,7 @@ export default async function EditCategoryPage({
         subTitle="Update the data in the fields and click 'save'"
         urlList={urlList}
       />
-      <EditCategoryForm category={category} />
+      <EditCategoryForm category={category as UpdateCategoryType} />
     </div>
   );
 }

@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1772723103627,
-      "tag": "0000_dapper_scream",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1772724137913,
-      "tag": "0001_wild_gorgon",
+      "when": 1772743653185,
+      "tag": "0000_cultured_pride",
       "breakpoints": true
     }
   ]

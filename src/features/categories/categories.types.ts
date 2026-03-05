@@ -19,6 +19,8 @@ export interface UpdateCategoryType extends InsertCategoryType {
   id: string;
 }
 
+export interface UpdateCategoryFormType extends InsertCategoryType {}
+
 export type UpdateCategoryFormErrors = Partial<
   Record<keyof UpdateCategoryType, string>
 >;
