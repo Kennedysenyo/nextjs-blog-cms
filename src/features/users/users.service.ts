@@ -8,23 +8,39 @@ import {
 } from "./users.types";
 import { createUserInsertSchema } from "./users.schema";
 import z from "zod";
+import { requirePermission } from "../auth/authorize";
+import { db } from "@/db/db";
+import { userTable } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export const createUser = async ({
   name,
   email,
   password,
-}: CreateUserInserType) => {
+  role,
+}: CreateUserInserType): Promise<string | null> => {
   try {
-    const data = await auth.api.signUpEmail({
+    await requirePermission({ user: ["create"] });
+
+    const data = await auth.api.createUser({
       body: {
-        name,
         email,
         password,
+        name,
+        role,
       },
     });
+
+    if (data.user.id) {
+      await db
+        .update(userTable)
+        .set({ emailVerified: true })
+        .where(eq(userTable.id, data.user.id));
+    }
+
+    return null;
   } catch (error) {
     if (error instanceof Error) {
-      console.error(error.message);
       return error.message;
     }
     return error as string;
@@ -36,6 +52,7 @@ export const validateCreateUserForm = async (
   formData: FormData,
 ): Promise<CreateUserFormResponseType> => {
   const rawInput = Object.fromEntries(formData);
+  console.log(rawInput);
 
   const result = createUserInsertSchema.safeParse(rawInput);
 
@@ -50,9 +67,9 @@ export const validateCreateUserForm = async (
 
     return { errors, errorMessage: null, success: false };
   }
-  const { name, email, password } = result.data;
+  const { name, email, password, role } = result.data;
 
-  const errorMessage = await createUser({ name, email, password });
+  const errorMessage = await createUser({ name, email, password, role });
 
   if (errorMessage) {
     return { errors: {}, errorMessage, success: false };

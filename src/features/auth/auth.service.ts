@@ -21,6 +21,7 @@ const login = async (
       body: { email, password, rememberMe: true },
       headers: await headers(),
     });
+    console.log(result);
 
     return null;
   } catch (error) {

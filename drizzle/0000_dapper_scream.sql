@@ -1,3 +1,20 @@
+CREATE TABLE `account` (
+	`id` text PRIMARY KEY NOT NULL,
+	`accountId` text NOT NULL,
+	`providerId` text NOT NULL,
+	`userId` text NOT NULL,
+	`accessToken` text,
+	`refreshToken` text,
+	`idToken` text,
+	`accessTokenExpiresAt` integer DEFAULT (unixepoch()),
+	`refreshTokenExpiresAt` integer DEFAULT (unixepoch()),
+	`scope` text,
+	`password` text,
+	`createdAt` integer DEFAULT (unixepoch()),
+	`updatedAt` integer DEFAULT (unixepoch()),
+	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `post_seo` (
 	`postId` text PRIMARY KEY NOT NULL,
 	`metaTitle` text,
@@ -15,9 +32,9 @@ CREATE TABLE `post_seo` (
 	`keywords` text,
 	`createdAt` integer DEFAULT (unixepoch()),
 	`updatedAt` integer DEFAULT (unixepoch()),
-	CONSTRAINT "post_seo_ogType_check" CHECK("post_seo"."ogType" IN ('articel','website','profile')),
+	CONSTRAINT "post_seo_ogType_check" CHECK("post_seo"."ogType" IN ('article','website','profile')),
 	CONSTRAINT "post_seo_robots_check" CHECK("post_seo"."robots" IN ('index, follow','noindex, follow','index, nofollow', 'noindex, nofollow')),
-	CONSTRAINT "post_seo_twitterCard_check" CHECK("post_seo"."twitterCard" IN ('summary', 'summary_large', 'app', 'player'))
+	CONSTRAINT "post_seo_twitterCard_check" CHECK("post_seo"."twitterCard" IN ('summary', 'summary_large_image', 'app', 'player'))
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `post_seo_canonicalUrl_unique` ON `post_seo` (`canonicalUrl`);--> statement-breakpoint
@@ -80,6 +97,7 @@ CREATE TABLE `session` (
 	`id` text PRIMARY KEY NOT NULL,
 	`expiresAt` integer DEFAULT (unixepoch()),
 	`token` text NOT NULL,
+	`impersonatedBy` text,
 	`createdAt` integer DEFAULT (unixepoch()),
 	`updatedAt` integer DEFAULT (unixepoch()),
 	`ipAddress` text,
@@ -96,12 +114,16 @@ CREATE TABLE `user` (
 	`emailVerified` integer DEFAULT false NOT NULL,
 	`image` text,
 	`role` text DEFAULT 'user' NOT NULL,
+	`banned` integer DEFAULT false NOT NULL,
+	`banReason` text,
+	`banExpires` integer DEFAULT (unixepoch()),
 	`isActive` integer DEFAULT true NOT NULL,
 	`createdBy` text,
-	`createdAt` integer DEFAULT (unixepoch()),
-	`updatedAt` integer DEFAULT (unixepoch()),
+	`createdAt` integer DEFAULT (unixepoch()) NOT NULL,
+	`updatedAt` integer DEFAULT (unixepoch()) NOT NULL,
 	FOREIGN KEY (`createdBy`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE set null,
-	CONSTRAINT "user_role_check" CHECK("user"."role" IN ('user', 'admin'))
+	CONSTRAINT "user_role_check" CHECK("user"."role" IN ('user', 'admin', 'editor')),
+	CONSTRAINT "user_ban_reason_check" CHECK("user"."banned" = 'true' AND "user"."banReason" IS NOT NULL)
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);--> statement-breakpoint

@@ -20,6 +20,7 @@ export const NewUserForm = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "user",
   });
 
   const handleFormFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +52,7 @@ export const NewUserForm = () => {
         email: "",
         password: "",
         confirmPassword: "",
+        role: "user",
       });
       router.push(`/users`);
     }
@@ -163,6 +165,51 @@ export const NewUserForm = () => {
                 {state.errors.confirmPassword && (
                   <small className="text-xs text-red-500">
                     {state.errors.confirmPassword}
+                  </small>
+                )}
+              </div>
+              <div>
+                <fieldset className="border border-gray-200 p-2 flex gap-4">
+                  <legend>Set User Role:</legend>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="user">User</label>
+                    <input
+                      type="radio"
+                      id="user"
+                      name="role"
+                      value="user"
+                      checked={formData.role === "user"}
+                      onChange={handleFormFieldChange}
+                    ></input>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="editor">Editor</label>
+
+                    <input
+                      type="radio"
+                      id="editor"
+                      name="role"
+                      value="editor"
+                      checked={formData.role === "editor"}
+                      onChange={handleFormFieldChange}
+                    ></input>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="admin">Admin</label>
+
+                    <input
+                      type="radio"
+                      id="admin"
+                      name="role"
+                      value={"admin"}
+                      checked={formData.role === "admin"}
+                      onChange={handleFormFieldChange}
+                    ></input>
+                  </div>
+                </fieldset>
+                {state.errors.role && (
+                  <small className="text-xs text-red-500">
+                    {state.errors.role}
                   </small>
                 )}
               </div>

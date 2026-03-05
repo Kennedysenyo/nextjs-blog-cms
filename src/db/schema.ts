@@ -6,7 +6,6 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
-import { InferInsertModel } from "drizzle-orm";
 
 export const userTable = sqliteTable(
   "user",
@@ -18,9 +17,14 @@ export const userTable = sqliteTable(
       .notNull()
       .default(false),
     image: text(),
-    role: text({ enum: ["user", "admin"] })
+    role: text({ enum: ["user", "admin", "editor"] })
       .default("user")
       .notNull(),
+    banned: integer("banned", { mode: "boolean" }).notNull().default(false),
+    banReason: text("banReason"),
+    banExpires: integer("banExpires", { mode: "timestamp" }).default(
+      sql`(unixepoch())`,
+    ),
     isActive: integer("isActive", { mode: "boolean" }).notNull().default(true),
     createdBy: text("createdBy").references(
       (): AnySQLiteColumn => userTable.id,
@@ -34,7 +38,17 @@ export const userTable = sqliteTable(
       .default(sql`(unixepoch())`),
   },
   (table) => [
-    check("user_role_check", sql`${table.role} IN ('user', 'admin')`),
+    check("user_role_check", sql`${table.role} IN ('user', 'admin', 'editor')`),
+    check(
+      "user_ban_reason_check",
+      sql`(
+      ${table.banned} = 'true' AND 
+      ${table.banReason} IS NOT NULL
+      ) OR (
+       ${table.banned} = false AND 
+       ${table.banReason} IS NULL
+       )`,
+    ),
   ],
 );
 
@@ -70,6 +84,7 @@ export const userSessionTable = sqliteTable("session", {
     sql`(unixepoch())`,
   ),
   token: text().unique().notNull(),
+  impersonatedBy: text("impersonatedBy"),
   createdAt: integer("createdAt", { mode: "timestamp" }).default(
     sql`(unixepoch())`,
   ),
@@ -228,5 +243,3 @@ export const user = userTable;
 export const session = userSessionTable;
 export const account = accountTable;
 export const verification = userVerificationTable;
-
-export type PostType = InferInsertModel<typeof postTable>;

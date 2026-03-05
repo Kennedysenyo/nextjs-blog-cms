@@ -8,6 +8,7 @@ export const createUserInsertSchema = insertUserSchema
   .pick({
     name: true,
     email: true,
+    role: true,
   })
   .extend({
     name: z.string().min(3, {
@@ -29,8 +30,11 @@ export const createUserInsertSchema = insertUserSchema
           ? "Password is required"
           : "Password must be > 8 characters",
     }),
+    role: z.enum(["user", "admin", "editor"]),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+export const updateUserInsertSchema = createUserInsertSchema;

@@ -4,7 +4,6 @@ import { postSeo } from "./data/post-seo";
 import { posts } from "./data/posts";
 import { session } from "./data/session";
 import { user } from "./data/user";
-// import { db } from "./db";
 import {
   accountTable,
   postsCategoriesTable,
@@ -14,14 +13,11 @@ import {
   userTable,
 } from "./schema";
 
-import { env } from "@/env/server";
 import dotenv from "dotenv";
 import { drizzle } from "drizzle-orm/libsql";
-import Database from "better-sqlite3";
 
 dotenv.config({ path: ".env.local" });
 
-// const sqlite = new Database("./db/database.db");
 export const db = drizzle(process.env.DB_FILE_NAME!);
 
 async function main() {

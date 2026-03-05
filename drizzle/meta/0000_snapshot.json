@@ -1,9 +1,128 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "a1d4df3a-bc05-4406-9d86-2e09bf5ad033",
+  "id": "2ddc4e0c-60fe-4153-852c-1a81fbe1f8f3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "account": {
+      "name": "account",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "accountId": {
+          "name": "accountId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "providerId": {
+          "name": "providerId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "accessToken": {
+          "name": "accessToken",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "refreshToken": {
+          "name": "refreshToken",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "idToken": {
+          "name": "idToken",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "accessTokenExpiresAt": {
+          "name": "accessTokenExpiresAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "refreshTokenExpiresAt": {
+          "name": "refreshTokenExpiresAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "account_userId_user_id_fk": {
+          "name": "account_userId_user_id_fk",
+          "tableFrom": "account",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "post_seo": {
       "name": "post_seo",
       "columns": {
@@ -140,7 +259,7 @@
       "checkConstraints": {
         "post_seo_ogType_check": {
           "name": "post_seo_ogType_check",
-          "value": "\"post_seo\".\"ogType\" IN ('articel','website','profile')"
+          "value": "\"post_seo\".\"ogType\" IN ('article','website','profile')"
         },
         "post_seo_robots_check": {
           "name": "post_seo_robots_check",
@@ -148,7 +267,7 @@
         },
         "post_seo_twitterCard_check": {
           "name": "post_seo_twitterCard_check",
-          "value": "\"post_seo\".\"twitterCard\" IN ('summary', 'summary_large', 'app', 'player')"
+          "value": "\"post_seo\".\"twitterCard\" IN ('summary', 'summary_large_image', 'app', 'player')"
         }
       }
     },
@@ -436,6 +555,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "impersonatedBy": {
+          "name": "impersonatedBy",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "createdAt": {
           "name": "createdAt",
           "type": "integer",
@@ -549,6 +675,29 @@
           "autoincrement": false,
           "default": "'user'"
         },
+        "banned": {
+          "name": "banned",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "banReason": {
+          "name": "banReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "banExpires": {
+          "name": "banExpires",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
         "isActive": {
           "name": "isActive",
           "type": "integer",
@@ -568,7 +717,7 @@
           "name": "createdAt",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "default": "(unixepoch())"
         },
@@ -576,7 +725,7 @@
           "name": "updatedAt",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "default": "(unixepoch())"
         }
@@ -610,7 +759,11 @@
       "checkConstraints": {
         "user_role_check": {
           "name": "user_role_check",
-          "value": "\"user\".\"role\" IN ('user', 'admin')"
+          "value": "\"user\".\"role\" IN ('user', 'admin', 'editor')"
+        },
+        "user_ban_reason_check": {
+          "name": "user_ban_reason_check",
+          "value": "\"user\".\"banned\" = 'true' AND \"user\".\"banReason\" IS NOT NULL"
         }
       }
     },

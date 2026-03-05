@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "96553274-48b8-4ea5-a51f-fa567135d958",
-  "prevId": "a1d4df3a-bc05-4406-9d86-2e09bf5ad033",
+  "id": "2692404a-e798-4f0a-a05a-d5b2081ae9d7",
+  "prevId": "2ddc4e0c-60fe-4153-852c-1a81fbe1f8f3",
   "tables": {
     "account": {
       "name": "account",
@@ -259,7 +259,7 @@
       "checkConstraints": {
         "post_seo_ogType_check": {
           "name": "post_seo_ogType_check",
-          "value": "\"post_seo\".\"ogType\" IN ('articel','website','profile')"
+          "value": "\"post_seo\".\"ogType\" IN ('article','website','profile')"
         },
         "post_seo_robots_check": {
           "name": "post_seo_robots_check",
@@ -267,7 +267,7 @@
         },
         "post_seo_twitterCard_check": {
           "name": "post_seo_twitterCard_check",
-          "value": "\"post_seo\".\"twitterCard\" IN ('summary', 'summary_large', 'app', 'player')"
+          "value": "\"post_seo\".\"twitterCard\" IN ('summary', 'summary_large_image', 'app', 'player')"
         }
       }
     },
@@ -555,6 +555,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "impersonatedBy": {
+          "name": "impersonatedBy",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "createdAt": {
           "name": "createdAt",
           "type": "integer",
@@ -668,6 +675,29 @@
           "autoincrement": false,
           "default": "'user'"
         },
+        "banned": {
+          "name": "banned",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "banReason": {
+          "name": "banReason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "banExpires": {
+          "name": "banExpires",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
         "isActive": {
           "name": "isActive",
           "type": "integer",
@@ -729,7 +759,11 @@
       "checkConstraints": {
         "user_role_check": {
           "name": "user_role_check",
-          "value": "\"user\".\"role\" IN ('user', 'admin')"
+          "value": "\"user\".\"role\" IN ('user', 'admin', 'editor')"
+        },
+        "user_ban_reason_check": {
+          "name": "user_ban_reason_check",
+          "value": "(\n      \"user\".\"banned\" = 'true' AND \n      \"user\".\"banReason\" IS NOT NULL\n      ) OR (\n       \"user\".\"banned\" = false AND \n       \"user\".\"banReason\" IS NULL\n       )"
         }
       }
     },

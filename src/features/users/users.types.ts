@@ -1,5 +1,5 @@
 import z from "zod";
-import { createUserInsertSchema } from "./users.schema";
+import { createUserInsertSchema, updateUserInsertSchema } from "./users.schema";
 
 export type CreateUserFormType = z.infer<typeof createUserInsertSchema>;
 export type CreateUserInserType = Omit<CreateUserFormType, "confirmPassword">;
@@ -13,3 +13,5 @@ export interface CreateUserFormResponseType {
   success: boolean;
   errorMessage: string | null;
 }
+
+export type UpdateUserFormType = z.infer<typeof updateUserInsertSchema>;

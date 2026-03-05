@@ -19,12 +19,14 @@ import { db } from "@/db/db";
 import { postsCategoriesTable } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
+import { requirePermission } from "../auth/authorize";
 
 export const addCategory = async ({
   name,
   slug,
 }: InsertCategoryType): Promise<string | null> => {
   try {
+    await requirePermission({ category: ["create"] });
     const session = await requireSession();
 
     if (!session) {

@@ -4,6 +4,8 @@ import { nextCookies } from "better-auth/next-js";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db/db";
 import * as schema from "@/db/schema";
+import { admin } from "better-auth/plugins";
+import { adminRole, editorRole, fullAc, userRole } from "@/auth/permissions";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -13,7 +15,7 @@ export const auth = betterAuth({
 
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
-      await sendEmail({
+      void sendEmail({
         to: user.email,
         subject: "Verify your email address",
         text: url,
@@ -26,5 +28,16 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     requireEmailVerification: true,
   },
-  plugins: [nextCookies()],
+  plugins: [
+    nextCookies(),
+    admin({
+      ac: fullAc,
+      roles: {
+        admin: adminRole,
+        editor: editorRole,
+        user: userRole,
+      },
+      adminRoles: ["admin"],
+    }),
+  ],
 });
