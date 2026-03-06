@@ -35,13 +35,13 @@ export const createPostSchema = insertPostSchema
     categoryId: z.uuidv4(),
     excerpt: z
       .string()
-      .min(160, {
+      .min(120, {
         error: (iss) =>
           iss.input?.length === 0
             ? "Excerpt is required"
-            : "Excerpt must be > 160 characters",
+            : "Excerpt must be < 120 characters",
       })
-      .max(120, "Excerpt must be between 160 and 120 characters"),
+      .max(160, "Excerpt must be between 160 and 120 characters"),
     featuredImage: z.url(),
   });
 

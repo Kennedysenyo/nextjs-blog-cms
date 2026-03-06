@@ -19,10 +19,8 @@ export const ImageUploader = ({ onChange, src, isLoading }: Props) => {
           Featured Image
         </label>
         <input
-          id="featuredImage"
           type="file"
-          name="featuredImage"
-          accept=".jpg, .jpeg, .png, .gif, .webp, .svg"
+          accept=".gif, .webp, .svg"
           disabled={isLoading}
           className="bg-white px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
           onChange={onChange}

@@ -1,8 +1,9 @@
-import { fetchCategories } from "@/actions/db/queries";
 import { NewPostForm } from "@/components/posts/new-post/post-form";
 import { FormPageHeader } from "@/components/form-page-header";
 import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";
+import { fetchCategories } from "@/features/categories/categories.queries";
+import { CategorySelectType } from "@/features/categories/categories.types";
 
 export default async function NewPostPage() {
   const session = await requireSession();
@@ -28,7 +29,7 @@ export default async function NewPostPage() {
       url: "/posts/new",
     },
   ];
-  const categories = await fetchCategories();
+  const categories: CategorySelectType[] = await fetchCategories();
   return (
     <div className="h-full flex flex-col">
       <FormPageHeader

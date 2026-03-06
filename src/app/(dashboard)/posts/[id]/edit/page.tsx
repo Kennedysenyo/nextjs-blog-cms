@@ -1,8 +1,9 @@
-import { fetchCategories, fetchPostById } from "@/actions/db/queries";
 import { FormPageHeader } from "@/components/form-page-header";
-import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";
 import { EditPostForm } from "@/components/posts/edit-post/edit-form";
+import { fetchPostByIdForEdit } from "@/features/posts/posts.queries";
+import { fetchCategories } from "@/features/categories/categories.queries";
+import { requireSession } from "@/features/auth/authorize";
 
 export default async function PostEditPage({
   params,
@@ -16,7 +17,7 @@ export default async function PostEditPage({
   }
 
   const { id } = await params;
-  const post = await fetchPostById(id);
+  const post = await fetchPostByIdForEdit(id);
   if (!post) {
     redirect(`/posts/${id}/preview`);
   }

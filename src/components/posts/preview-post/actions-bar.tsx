@@ -1,11 +1,11 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import {
   setPostStatusToArchive,
   setPostStatusToPublish,
-} from "@/actions/db/queries";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+} from "@/features/posts/posts.queries";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { ChartLine, CloudUpload, EyeOff, FilePen } from "lucide-react";
@@ -59,7 +59,7 @@ export const ActionsBar = ({ postStatus, postId }: Props) => {
       className={cn(
         "absolute w-full left-1/2 -translate-x-1/2 z-5",
         isMobile && "md:hidden mb-1 bottom-0 -translate-y-1/2",
-        !isMobile && "hidden md:block"
+        !isMobile && "hidden md:block",
       )}
     >
       <div className="p-2 rounded-lg bg-white w-2/3 shadow-lg bg-green-500 max-w-[900px] mx-auto ">

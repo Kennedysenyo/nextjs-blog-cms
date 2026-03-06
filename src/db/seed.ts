@@ -1,9 +1,14 @@
+import dotenv from "dotenv";
+import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/node-postgres";
+
 import { account } from "./data/account";
 import { postCategories } from "./data/post-categories";
 import { postSeo } from "./data/post-seo";
 import { posts } from "./data/posts";
 import { session } from "./data/session";
 import { user } from "./data/user";
+
 import {
   accountTable,
   postsCategoriesTable,
@@ -13,18 +18,22 @@ import {
   userTable,
 } from "./schema";
 
-import dotenv from "dotenv";
-import { drizzle } from "drizzle-orm/libsql";
-
 dotenv.config({ path: ".env.local" });
 
-export const db = drizzle(process.env.DB_FILE_NAME!);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL!,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+const db = drizzle(pool);
 
 async function main() {
   try {
-    console.log("....Starting ");
+    console.log("....Starting");
+
     await db.transaction(async (tx) => {
-      account;
       await tx.insert(userTable).values(user);
       await tx.insert(accountTable).values(account);
       await tx.insert(userSessionTable).values(session);
@@ -33,12 +42,11 @@ async function main() {
       await tx.insert(postSeoTable).values(postSeo);
     });
 
-    console.log("...Data inserted successfully✅ ");
+    console.log("...Data inserted successfully ✅");
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(error);
-    }
-    console.error(error as string);
+    console.error(error);
+  } finally {
+    await pool.end();
   }
 }
 

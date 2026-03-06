@@ -7,22 +7,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  deleteCategoryById,
-  deleteUserById,
-  fetchUsersByFilter,
-} from "@/actions/db/queries";
+
 import { capitalizeFirstLetter } from "better-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FilePen } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
+import {
+  deleteUserById,
+  fetchUsersByFilter,
+} from "@/features/users/users.queries";
 
 interface Props {
   currentPage: string;
   term: string;
 }
-export const UsesTable = async ({ currentPage, term }: Props) => {
+export const UsersTable = async ({ currentPage, term }: Props) => {
   const users = await fetchUsersByFilter(Number(currentPage), term);
   return (
     <>

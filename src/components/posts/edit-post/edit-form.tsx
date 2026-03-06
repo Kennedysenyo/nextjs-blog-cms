@@ -4,7 +4,6 @@ import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { slugify } from "@/utils/slugify";
-import postgres from "postgres";
 import { capitalizeText } from "@/utils/capitalize-text";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -12,13 +11,15 @@ import { MarkdownEditor } from "../new-post/markdown-editor";
 import { ImageUploader } from "../new-post/image-uploader";
 import {
   EditPostInputResponseType,
+  PostSelectEditType,
   UpdatePostInput,
 } from "@/features/posts/posts.types";
 import { validateEditForm } from "@/features/posts/posts.service";
+import { CategorySelectType } from "@/features/categories/categories.types";
 
 interface Props {
-  categories: postgres.RowList<postgres.Row[]>;
-  post: UpdatePostInput;
+  categories: CategorySelectType[];
+  post: PostSelectEditType;
   postId: string;
 }
 
@@ -159,10 +160,6 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
             </p>
           )}
         </div>
-
-        {/* <span className="py-1 px-4 border border-gray-100 font-semibold text-brand-blue rounded-lg bg-white self-start mb-4">
-          Draft
-        </span> */}
 
         <form
           action={formAction}

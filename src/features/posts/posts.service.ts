@@ -19,10 +19,11 @@ import {
 } from "./posts.schema";
 import z from "zod";
 import { handleError } from "@/utils/handle-error";
-import { requireSession } from "@/lib/better-auth/server-auth";
+
 import { db } from "@/db/db";
 import { postSeoTable, postTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { requirePermission, requireSession } from "../auth/authorize";
 
 export const insertPost = async (
   data: CreatePostInput,
@@ -126,7 +127,10 @@ export const updatePost = async (
   data: UpdatePostInput,
 ): Promise<string | null> => {
   try {
-    const session = await requireSession();
+    await requirePermission({ post: ["update:own"] });
+    const session = await requirePermission({
+      post: ["update:any", "update:own"],
+    });
     const authorId = session?.user.id;
     if (!authorId) {
       throw new Error("Error! No User session found!");
@@ -186,6 +190,8 @@ export const validateEditForm = async (
   formData: FormData,
 ): Promise<EditPostInputResponseType> => {
   const rawInput = Object.fromEntries(formData);
+
+  // console.log(rawInput);
 
   const result = editPostSchema.safeParse(rawInput);
 

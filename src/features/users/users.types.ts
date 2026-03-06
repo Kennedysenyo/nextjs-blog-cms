@@ -40,3 +40,8 @@ export type SelectUserAdminEdit = Pick<
   UserSelectType,
   "id" | "name" | "email" | "role"
 >;
+
+export type UserTableSelect = Pick<
+  UserSelectType,
+  "id" | "name" | "email" | "role"
+>;

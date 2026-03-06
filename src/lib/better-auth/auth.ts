@@ -1,18 +1,25 @@
 import { sendEmail } from "@/actions/emails/email-verification";
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/db/db";
-import * as schema from "@/db/schema";
+
 import { admin } from "better-auth/plugins";
 import { adminRole, editorRole, fullAc, userRole } from "@/auth/permissions";
+import { Pool } from "pg";
+
+const dbUrl = process.env.DATABASE_URL;
+if (!dbUrl) {
+  throw new Error(
+    "DATABASE_URL environment variable is required for better auth configurateion!",
+  );
+}
 
 export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: "sqlite",
-    schema,
+  database: new Pool({
+    connectionString: dbUrl,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   }),
-
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
       void sendEmail({

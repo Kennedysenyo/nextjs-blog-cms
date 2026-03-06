@@ -7,15 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  deleteCategoryById,
-  fetchCategoriesByFilter,
-} from "@/actions/db/queries";
+
 import { capitalizeFirstLetter } from "better-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FilePen } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
+import {
+  deleteCategoryById,
+  fetchCategoriesByFilter,
+} from "@/features/categories/categories.queries";
 
 interface Props {
   currentPage: string;

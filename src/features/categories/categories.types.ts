@@ -1,5 +1,6 @@
 import z from "zod";
 import { createCategoryInsertSchema } from "./categories.schema";
+import { CategoriesSelect } from "@/db/schema";
 
 // Category Creation
 export type InsertCategoryType = z.infer<typeof createCategoryInsertSchema>;
@@ -30,3 +31,7 @@ export interface UpdateCategoryFormResponseType {
   success: boolean;
   errorMessage: string | null;
 }
+
+//SELECTING (QUERY)
+
+export type CategorySelectType = Omit<CategoriesSelect, "createdAt">;

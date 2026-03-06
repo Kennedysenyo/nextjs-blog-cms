@@ -1,9 +1,9 @@
-import { fetchCategoriesTotalPages } from "@/actions/db/queries";
 import { AddButton } from "@/components/AddButton";
 import Pagination from "@/components/posts/all-posts/Paginations";
 import { Filter } from "@/components/posts/post-categories/filter";
 import { CategoriesTable } from "@/components/posts/post-categories/table";
 import { CategoriesTableSkeleton } from "@/components/skeletons/categories-table-skeleton";
+import { fetchCategoriesTotalPages } from "@/features/categories/categories.queries";
 import { requireSession } from "@/lib/better-auth/server-auth";
 
 import { redirect } from "next/navigation";

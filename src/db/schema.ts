@@ -1,56 +1,64 @@
-import { sql } from "drizzle-orm";
+import { InferSelectModel, sql } from "drizzle-orm";
 import {
-  AnySQLiteColumn,
+  AnyPgColumn,
+  boolean,
   check,
-  integer,
-  sqliteTable,
+  date,
+  pgEnum,
+  pgTable,
   text,
-} from "drizzle-orm/sqlite-core";
+  timestamp,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
 
-export const userTable = sqliteTable(
+export const roleEnum = pgEnum("role", ["user", "admin", "editor"]);
+export const statusEnum = pgEnum("status", ["draft", "published", "archived"]);
+export const robotsEnum = pgEnum("robots", [
+  "index, follow",
+  "noindex, follow",
+  "index, nofollow",
+  "noindex, nofollow",
+]);
+export const ogTypeEnum = pgEnum("ogType", ["article", "website", "profile"]);
+export const twitterCardEnum = pgEnum("twitterCard", [
+  "summary",
+  "summary_large_image",
+  "app",
+  "player",
+]);
+
+export const userTable = pgTable(
   "user",
   {
-    id: text().primaryKey().notNull(),
-    name: text().notNull(),
-    email: text().notNull().unique(),
-    emailVerified: integer("emailVerified", { mode: "boolean" })
-      .notNull()
-      .default(false),
+    id: text().primaryKey(),
+    name: varchar({ length: 100 }).notNull(),
+    email: varchar({ length: 255 }).notNull().unique(),
+    emailVerified: boolean("emailVerified").notNull().default(false),
     image: text(),
-    role: text({ enum: ["user", "admin", "editor"] })
-      .default("user")
-      .notNull(),
-    banned: integer("banned", { mode: "boolean" }).notNull().default(false),
+    role: roleEnum().notNull().default("user"),
+    banned: boolean().notNull().default(false),
     banReason: text("banReason"),
-    banExpires: integer("banExpires", { mode: "timestamp" }).default(sql`null`),
-    isActive: integer("isActive", { mode: "boolean" }).notNull().default(true),
-    createdBy: text("createdBy").references(
-      (): AnySQLiteColumn => userTable.id,
-      { onDelete: "set null" },
-    ),
-    createdAt: integer({ mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`),
-    updatedAt: integer({ mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`),
+    banExpires: date("banExpires").default(sql`null`),
+    isActive: boolean("isActive").notNull().default(true),
+    createdBy: text("createdBy").references((): AnyPgColumn => userTable.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
   },
   (table) => [
-    check("user_role_check", sql`${table.role} IN ('user', 'admin', 'editor')`),
+    check("user_role_check", sql`${table.role} IN ('admin', 'user', 'editor')`),
     check(
       "user_ban_reason_check",
-      sql`(
-      ${table.banned} = 'true' AND 
-      ${table.banReason} IS NOT NULL
-      ) OR (
-       ${table.banned} = false AND 
-       ${table.banReason} IS NULL
-       )`,
+      sql`(${table.banned} = 'true' AND ${table.banReason} IS NOT NULL)
+       OR
+       (${table.banned} = 'false' AND ${table.banReason} IS NULL)`,
     ),
   ],
 );
 
-export const accountTable = sqliteTable("account", {
+export const accountTable = pgTable("account", {
   id: text().primaryKey().notNull(),
   accountId: text("accountId").notNull(),
   providerId: text("providerId").notNull(),
@@ -60,175 +68,139 @@ export const accountTable = sqliteTable("account", {
   accessToken: text("accessToken"),
   refreshToken: text("refreshToken"),
   idToken: text("idToken"),
-  accessTokenExpiresAt: integer("accessTokenExpiresAt", {
-    mode: "timestamp",
-  }).default(sql`(unixepoch())`),
-  refreshTokenExpiresAt: integer("refreshTokenExpiresAt", {
-    mode: "timestamp",
-  }).default(sql`(unixepoch())`),
+  accessTokenExpiresAt: timestamp("accessTokenExpiresAt"),
+  refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt"),
   scope: text(),
   password: text(),
-  createdAt: integer("createdAt", { mode: "timestamp" }).default(
-    sql`(unixepoch())`,
-  ),
-  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(
-    sql`(unixepoch())`,
-  ),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
 
-export const userSessionTable = sqliteTable("session", {
-  id: text().primaryKey().notNull(),
-  expiresAt: integer("expiresAt", { mode: "timestamp" }).default(
-    sql`(unixepoch())`,
-  ),
+export const userSessionTable = pgTable("session", {
+  id: text().primaryKey(),
+  expiresAt: timestamp("expiresAt").notNull(),
   token: text().unique().notNull(),
-  impersonatedBy: text("impersonatedBy"),
-  createdAt: integer("createdAt", { mode: "timestamp" }).default(
-    sql`(unixepoch())`,
-  ),
-  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(
-    sql`(unixepoch())`,
-  ),
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").defaultNow(),
   ipAddress: text("ipAddress"),
   userAgent: text("userAgent"),
   userId: text("userId")
-    .notNull()
-    .references(() => userTable.id, { onDelete: "cascade" }),
+    .references(() => userTable.id, { onDelete: "cascade" })
+    .notNull(),
 });
 
-export const userVerificationTable = sqliteTable("verification", {
+export const userVerificationTable = pgTable("verification", {
   id: text().primaryKey().notNull(),
   identifier: text().notNull(),
   value: text().notNull(),
-  expiresAt: integer("expiresAt", { mode: "timestamp" }),
-  createdAt: integer("createdAt", { mode: "timestamp" }).default(
-    sql`(unixepoch())`,
-  ),
-  updatedAt: integer("updatedAt", { mode: "timestamp" }).default(
-    sql`(unixepoch())`,
-  ),
+  expiresAt: timestamp("expiresAt").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
 
-export const postsCategoriesTable = sqliteTable("posts_categories", {
-  id: text().primaryKey().notNull(),
-  name: text().unique().notNull(),
+export const postsCategoriesTable = pgTable("posts_categories", {
+  id: uuid()
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  name: varchar({ length: 100 }).unique().notNull(),
   slug: text().unique().notNull(),
-  createdAt: integer("createdAt", { mode: "timestamp" }).default(
-    sql`(unixepoch())`,
-  ),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
-export const postTable = sqliteTable(
+export const postTable = pgTable(
   "posts",
   {
-    id: text().primaryKey().notNull(),
+    id: uuid()
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     title: text().notNull(),
     slug: text().notNull().unique(),
     contentMd: text("contentMd").notNull(),
-    excerpt: text(),
+    excerpt: varchar({ length: 161 }).notNull(),
     featuredImage: text("featuredImage").notNull(),
-    categoryId: text("categoryId")
+    categoryId: uuid("categoryId")
       .notNull()
-      .references(() => postsCategoriesTable.id),
+      .references(() => postsCategoriesTable.id, { onDelete: "set null" }),
     authorId: text("authorId")
       .notNull()
       .references(() => userTable.id),
-    status: text({ enum: ["draft", "published", "archived"] })
-      .notNull()
-      .default("draft"),
-    publishedAt: integer("publishedAt", { mode: "timestamp" }),
-    archivedAt: integer("archivedAt", { mode: "timestamp" }),
-    createdAt: integer("createdAt", { mode: "timestamp" }).default(
-      sql`(unixepoch())`,
-    ),
-    updatedAt: integer("updatedAt", { mode: "timestamp" }).default(
-      sql`(unixepoch())`,
-    ),
+    status: statusEnum().notNull().default("draft"),
+    publishedAt: timestamp("publishedAt").default(sql`null`),
+    archivedAt: timestamp("archivedAt").default(sql`null`),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
   },
   (table) => [
     check(
       "posts_state_check",
-      sql`
+      sql`(
       (
-        (${table.status} = 'draft'
-          AND ${table.publishedAt} IS NULL
-          AND ${table.archivedAt} IS NULL
-        )
-        OR
-        (${table.status} = 'published'
-          AND ${table.publishedAt} IS NOT NULL
-          AND ${table.archivedAt} IS NULL
-        )
-        OR
-        (${table.status} = 'archived'
-          AND ${table.archivedAt} IS NOT NULL
-          AND ${table.publishedAt} IS NULL
-        )
-      )
-    `,
+      ${table.status} = 'draft' AND 
+      ${table.publishedAt} IS NULL AND 
+      ${table.archivedAt} IS NULL
+      ) OR (
+       ${table.status} = 'published' AND
+        ${table.publishedAt} IS NOT NULL AND 
+        ${table.archivedAt} IS NULL
+        ) OR (
+         ${table.status} = 'archived' AND 
+         ${table.publishedAt} IS NULL AND 
+         ${table.archivedAt} IS NOT NULL
+         )
+      ) `,
     ),
   ],
 );
 
-export const postsSlugsTable = sqliteTable("posts_slugs", {
-  id: text().primaryKey(),
-  postId: text("postId")
+export const postsSlugsTable = pgTable("posts_slugs", {
+  id: uuid()
+    .primaryKey()
     .notNull()
-    .references(() => postTable.id, { onDelete: "cascade" }),
+    .default(sql`gen_random_uuid()`),
+  postId: uuid("postId")
+    .references(() => postTable.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
   slug: text().notNull(),
-  isCurrent: integer("isCurrent", { mode: "boolean" }).notNull().default(true),
-  createdAt: integer("createdAt", { mode: "timestamp" }).default(
-    sql`(unixepoch())`,
-  ),
+  isCurrent: boolean("isCurrent").notNull().default(true),
+  createdAt: timestamp("createAt").defaultNow().notNull(),
 });
 
-export const postSeoTable = sqliteTable(
+// POST SEO
+export const postSeoTable = pgTable(
   "post_seo",
   {
-    postId: text("postId").primaryKey(),
+    postId: uuid("postId")
+      .primaryKey()
+      .notNull()
+      .references(() => postTable.id),
     metaTitle: text("metaTitle"),
     metaDescription: text("metaDescription"),
     canonicalUrl: text("canonicalUrl").unique(),
-    robots: text({
-      enum: [
-        "index, follow",
-        "noindex, follow",
-        "index, nofollow",
-        "noindex, nofollow",
-      ],
-    })
-      .notNull()
-      .default("index, follow"),
+    robots: robotsEnum().notNull().default("index, follow"),
     ogTitle: text("ogTitle"),
     ogDescription: text("ogDescription"),
     ogImage: text("ogImage"),
-    ogType: text("ogType", { enum: ["article", "website", "profile"] })
-      .notNull()
-      .default("article"),
-    twitterCard: text("twitterCard", {
-      enum: ["summary", "summary_large_image", "app", "player"],
-    })
-      .notNull()
-      .default("summary_large_image"),
+    ogType: ogTypeEnum().default("article").notNull(),
+    twitterCard: twitterCardEnum().notNull().default("summary_large_image"),
     twitterTitle: text("twitterTitle"),
     twitterDescription: text("twitterDescription"),
     twitterImage: text("twitterImage"),
     keywords: text().$type<string[]>(),
-    createdAt: integer("createdAt", { mode: "timestamp" }).default(
-      sql`(unixepoch())`,
-    ),
-    updatedAt: integer("updatedAt", { mode: "timestamp" }).default(
-      sql`(unixepoch())`,
-    ),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },
   (table) => [
     check(
       "post_seo_ogType_check",
-      sql`${table.ogType} IN ('article','website','profile')`,
+      sql`${table.ogType} IN ('article', 'website', 'profile')`,
     ),
     check(
       "post_seo_robots_check",
-      sql`${table.robots} IN ('index, follow','noindex, follow','index, nofollow', 'noindex, nofollow')`,
+      sql`${table.robots} IN ('index, follow', 'noindex, follow', 'index, nofollow', 'noindex, nofollow')`,
     ),
     check(
       "post_seo_twitterCard_check",
@@ -237,7 +209,6 @@ export const postSeoTable = sqliteTable(
   ],
 );
 
-export const user = userTable;
-export const session = userSessionTable;
-export const account = accountTable;
-export const verification = userVerificationTable;
+export type UserSelect = InferSelectModel<typeof userTable>; // users
+export type CategoriesSelect = InferSelectModel<typeof postsCategoriesTable>; // categories
+export type PostSelect = InferSelectModel<typeof postTable>; //posts

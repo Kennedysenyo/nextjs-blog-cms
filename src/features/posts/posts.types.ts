@@ -45,3 +45,7 @@ export interface SeoFormResponseType {
   success: boolean;
   errorMessage: string | null;
 }
+
+// SELECT (QUERY)
+
+export type PostSelectEditType = CreatePostInput;

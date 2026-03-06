@@ -6,7 +6,7 @@ import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { MarkdownEditor } from "./markdown-editor";
 import { ImageUploader } from "./image-uploader";
 import { slugify } from "@/utils/slugify";
-import postgres from "postgres";
+
 import { capitalizeText } from "@/utils/capitalize-text";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -15,9 +15,10 @@ import {
   CreatePostInputResponseType,
 } from "@/features/posts/posts.types";
 import { validateCreatePostForm } from "@/features/posts/posts.service";
+import { CategorySelectType } from "@/features/categories/categories.types";
 
 interface Props {
-  categories: postgres.RowList<postgres.Row[]>;
+  categories: CategorySelectType[];
 }
 
 export const NewPostForm = ({ categories }: Props) => {

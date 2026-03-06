@@ -1,14 +1,14 @@
 "use client";
 
+import { CategorySelectType } from "@/features/categories/categories.types";
 import { capitalizeText } from "@/utils/capitalize-text";
 import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import postgres from "postgres";
 
 import { ChangeEvent, useState } from "react";
 
 interface Props {
-  categories: postgres.RowList<postgres.Row[]>;
+  categories: CategorySelectType[];
 }
 export const Filter = ({ categories }: Props) => {
   const searchParams = useSearchParams();
@@ -27,7 +27,7 @@ export const Filter = ({ categories }: Props) => {
 
   let timeout: NodeJS.Timeout;
   const handleSearch = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
 

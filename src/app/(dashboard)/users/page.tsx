@@ -1,11 +1,10 @@
-import { fetchUsersTotalPages } from "@/actions/db/queries";
 import { AddButton } from "@/components/AddButton";
 import Pagination from "@/components/posts/all-posts/Paginations";
 import { UsersTableSkeleton } from "@/components/skeletons/users-table-skeleton";
 import { UsersSearchBar } from "@/components/users/users-searchbar";
-import { UsesTable } from "@/components/users/users-table";
+import { UsersTable } from "@/components/users/users-table";
+import { fetchUsersTotalPages } from "@/features/users/users.queries";
 import { requireSession } from "@/lib/better-auth/server-auth";
-
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -36,7 +35,7 @@ export default async function UsersPage({
         <AddButton url="/users/new" label="Add User" />
       </div>
       <Suspense key={currentPage + term} fallback={<UsersTableSkeleton />}>
-        <UsesTable currentPage={currentPage} term={term} />
+        <UsersTable currentPage={currentPage} term={term} />
       </Suspense>
 
       <div className="flex items-center justify-center mt-6">

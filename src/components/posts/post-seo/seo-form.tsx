@@ -44,10 +44,10 @@ export const SEOForm = ({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => {
-      const data = { ...prev, [name]: value };
+      const data = { ...prev, [name]: name === "keywords" ? [value] : value };
       setKeywordsCount(
         data.keywords
-          .join()
+          .join(" ")
           .split(/\s*,\s*/)
           .filter(Boolean).length,
       );
@@ -164,7 +164,7 @@ export const SEOForm = ({
                 </label>
                 <br />
                 <small className="text-sm italic">
-                  (add comma separated keywords (e.g., word1,word2,..etc.))
+                  (add comma separated keywords (e.g., word1, word2,..etc.))
                 </small>
                 <textarea
                   id="keywords"
@@ -173,7 +173,7 @@ export const SEOForm = ({
                   autoComplete="off"
                   placeholder="e.g., There are ..."
                   className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all resize-none"
-                  value={formData.keywords}
+                  value={formData.keywords.join(" ")}
                   onChange={handleFormFieldChange}
                 />
 

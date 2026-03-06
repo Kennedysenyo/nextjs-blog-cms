@@ -8,12 +8,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DropDown } from "./dropdown";
-import { deletePostById, fetchPostsByFilter } from "@/actions/db/queries";
+
 import { capitalizeFirstLetter } from "better-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Eye, FilePen, Trash2 } from "lucide-react";
 import { DeleteButton } from "../../delete-button";
+import {
+  deletePostById,
+  fetchPostsByFilter,
+} from "@/features/posts/posts.queries";
 
 interface Props {
   currentPage: string;
