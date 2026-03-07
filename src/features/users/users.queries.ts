@@ -2,11 +2,10 @@
 
 import { db } from "@/db/db";
 import { userTable } from "@/db/schema";
-import { count, eq, ilike, sql, SQL } from "drizzle-orm";
+import { count, eq, sql, SQL } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { SelectUserAdminEdit, UserTableSelect } from "./users.types";
 import { revalidatePath } from "next/cache";
-import { email } from "zod";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -64,7 +63,7 @@ export const fetchUsersTotalPages = async (term: string) => {
 
     return Math.ceil(results[0].total / ITEMS_PER_PAGE);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     throw new Error("Error fetching user count");
   }
 };
