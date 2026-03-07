@@ -7,8 +7,10 @@ import {
   FileText,
   LayoutDashboard,
   List,
+  ListPlus,
   LucideProps,
   Settings,
+  UserRoundPlus,
   Users2,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -72,8 +74,8 @@ export const SidebarMenu = () => {
           url: "/categories",
         },
         {
-          name: "Add Categories",
-          icon: FilePlus,
+          name: "Add Category",
+          icon: ListPlus,
           url: "/categories/new",
         },
       ],
@@ -91,7 +93,7 @@ export const SidebarMenu = () => {
         },
         {
           name: "Add User",
-          icon: FilePlus,
+          icon: UserRoundPlus,
           url: "/users/new",
         },
       ],

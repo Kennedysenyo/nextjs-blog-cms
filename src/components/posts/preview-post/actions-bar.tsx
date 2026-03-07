@@ -5,7 +5,8 @@ import { Spinner } from "@/components/ui/spinner";
 import {
   setPostStatusToArchive,
   setPostStatusToPublish,
-} from "@/features/posts/posts.queries";
+} from "@/features/posts/posts.service";
+
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { ChartLine, CloudUpload, EyeOff, FilePen } from "lucide-react";
@@ -49,6 +50,7 @@ export const ActionsBar = ({ postStatus, postId }: Props) => {
       }
     });
   };
+
   useEffect(() => {
     if (!pending) {
       setShowLoading({ loadA: false, loadB: false });

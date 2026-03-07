@@ -13,13 +13,12 @@ import {
   updateCategoryInsertSchema,
 } from "@/features/categories/categories.schema";
 import z from "zod";
-import { requireSession } from "@/lib/better-auth/server-auth";
 
 import { db } from "@/db/db";
 import { postsCategoriesTable } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
-import { requirePermission } from "../auth/authorize";
+import { requirePermission, requireSession } from "../auth/authorize";
 
 export const addCategory = async ({
   name,
@@ -32,6 +31,8 @@ export const addCategory = async ({
     if (!session) {
       redirect("/login");
     }
+
+    await requirePermission({ category: ["create"] });
 
     await db.insert(postsCategoriesTable).values({
       id: crypto.randomUUID(),
@@ -94,6 +95,8 @@ export const updateCategory = async ({
     if (!session) {
       redirect("/login");
     }
+
+    await requirePermission({ category: ["update"] });
 
     await db
       .update(postsCategoriesTable)

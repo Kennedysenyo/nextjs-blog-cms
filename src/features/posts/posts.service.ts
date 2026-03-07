@@ -23,7 +23,14 @@ import { handleError } from "@/utils/handle-error";
 import { db } from "@/db/db";
 import { postSeoTable, postTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { requirePermission, requireSession } from "../auth/authorize";
+import {
+  requirePermission,
+  requireSelfOrPermission,
+  requireSession,
+} from "../auth/authorize";
+import { redirect } from "next/navigation";
+import { fetchPostAuthorId } from "./posts.queries";
+import { revalidatePath } from "next/cache";
 
 export const insertPost = async (
   data: CreatePostInput,
@@ -34,10 +41,15 @@ export const insertPost = async (
       throw new Error("BASE_URL enviroment variable is require to create post");
 
     const session = await requireSession();
+
+    if (!session) {
+      redirect("/login");
+    }
     const authorId = session?.user.id;
     if (!authorId) {
       throw new Error("Error! No User session found!");
     }
+    await requirePermission({ post: ["create"] });
 
     const canonicalUrl = `${baseUrl}/insights/${data.slug}`;
 
@@ -127,14 +139,17 @@ export const updatePost = async (
   data: UpdatePostInput,
 ): Promise<string | null> => {
   try {
-    await requirePermission({ post: ["update:own"] });
-    const session = await requirePermission({
-      post: ["update:any", "update:own"],
-    });
-    const authorId = session?.user.id;
-    if (!authorId) {
-      throw new Error("Error! No User session found!");
+    const session = await requireSession();
+    if (!session) {
+      redirect("/login");
     }
+    const { authorId } = await fetchPostAuthorId(postId);
+
+    await requireSelfOrPermission(authorId, {
+      resource: "post",
+      own: "update:own",
+      any: "update:any",
+    });
 
     const baseUrl = process.env.BASE_URL!;
     if (!baseUrl)
@@ -229,10 +244,21 @@ export const updateMetaData = async (
 ): Promise<string | null> => {
   try {
     const session = await requireSession();
+
+    if (!session) {
+      redirect("/login");
+    }
+
     const authorId = session?.user.id;
     if (!authorId) {
       throw new Error("Error! No User session found!");
     }
+
+    await requireSelfOrPermission(authorId, {
+      resource: "post",
+      own: "update:own",
+      any: "update:any",
+    });
 
     await db.update(postSeoTable).set({
       metaTitle: metadata.metaTitle,
@@ -282,4 +308,87 @@ export const validateSEOForm = async (
     return { errors: {}, success: false, errorMessage };
   }
   return { errors: {}, success: true, errorMessage: null };
+};
+
+export const setPostStatusToPublish = async (
+  id: string,
+): Promise<string | null> => {
+  try {
+    await requirePermission({ post: ["publish"] });
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(postTable)
+        .set({ status: "published", publishedAt: new Date(), archivedAt: null })
+        .where(eq(postTable.id, id));
+
+      await tx
+        .update(postSeoTable)
+        .set({ robots: "index, follow" })
+        .where(eq(postSeoTable.postId, id));
+    });
+    revalidatePath(`posts/${id}/preview`);
+    return null;
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === "Unauthorized" || error.message === "Forbidden") {
+        return error.message;
+      }
+      return "Error! Status change unsuccessful";
+    }
+    return error as string;
+  }
+};
+
+export const setPostStatusToArchive = async (
+  id: string,
+): Promise<string | null> => {
+  try {
+    await db.transaction(async (tx) => {
+      await tx
+        .update(postTable)
+        .set({ status: "archived", publishedAt: null, archivedAt: new Date() })
+        .where(eq(postTable.id, id));
+
+      await tx
+        .update(postSeoTable)
+        .set({ robots: "noindex, follow" })
+        .where(eq(postSeoTable.postId, id));
+    });
+    revalidatePath(`/posts/${id}/preview`);
+    return null;
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === "Unauthorized" || error.message === "Forbidden") {
+        return error.message;
+      }
+      return "Error! Status change unsuccessful";
+    }
+    return error as string;
+  }
+};
+
+export const deletePostById = async (id: string): Promise<string | null> => {
+  try {
+    await requirePermission({ post: ["delete"] });
+
+    const [deletedPostId] = await db
+      .delete(postTable)
+      .where(eq(postTable.id, id))
+      .returning({ id: postTable.id });
+
+    if (!deletedPostId) {
+      throw new Error("An Error Occured!");
+    }
+
+    return null;
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === "Unauthorized" || error.message === "Forbidden") {
+        return error.message;
+      }
+      return "Failed to Delete Post";
+    }
+    return error as string;
+  }
 };

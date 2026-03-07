@@ -12,12 +12,10 @@ import { DropDown } from "./dropdown";
 import { capitalizeFirstLetter } from "better-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Eye, FilePen, Trash2 } from "lucide-react";
+import { Eye, FilePen } from "lucide-react";
 import { DeleteButton } from "../../delete-button";
-import {
-  deletePostById,
-  fetchPostsByFilter,
-} from "@/features/posts/posts.queries";
+import { fetchPostsByFilter } from "@/features/posts/posts.queries";
+import { deletePostById } from "@/features/posts/posts.service";
 
 interface Props {
   currentPage: string;

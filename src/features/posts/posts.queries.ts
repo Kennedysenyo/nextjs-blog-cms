@@ -74,58 +74,6 @@ export const fetchPostStatus = async (id: string) => {
   }
 };
 
-export const setPostStatusToPublish = async (
-  id: string,
-): Promise<string | null> => {
-  try {
-    await db.transaction(async (tx) => {
-      await tx
-        .update(postTable)
-        .set({ status: "published", publishedAt: new Date(), archivedAt: null })
-        .where(eq(postTable.id, id));
-
-      await tx
-        .update(postSeoTable)
-        .set({ robots: "index, follow" })
-        .where(eq(postSeoTable.postId, id));
-    });
-    revalidatePath(`posts/${id}/preview`);
-    return null;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-      return "Error! Status change unsuccessful";
-    }
-    return error as string;
-  }
-};
-
-export const setPostStatusToArchive = async (
-  id: string,
-): Promise<string | null> => {
-  try {
-    await db.transaction(async (tx) => {
-      await tx
-        .update(postTable)
-        .set({ status: "archived", publishedAt: null, archivedAt: new Date() })
-        .where(eq(postTable.id, id));
-
-      await tx
-        .update(postSeoTable)
-        .set({ robots: "noindex, follow" })
-        .where(eq(postSeoTable.postId, id));
-    });
-    revalidatePath(`/posts/${id}/preview`);
-    return null;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-      return "Error! Status change unsuccessful";
-    }
-    return error as string;
-  }
-};
-
 export const fetchMetadataByPostId = async (id: string) => {
   try {
     const [metadata] = await db
@@ -325,19 +273,11 @@ export const fetchPostsByFilter = async (
   }
 };
 
-export const deletePostById = async (id: string) => {
-  try {
-    const [deletedPostId] = await db
-      .delete(postTable)
-      .where(eq(postTable.id, id))
-      .returning({ id: postTable.id });
+export const fetchPostAuthorId = async (postId: string) => {
+  const [authorId] = await db
+    .select({ authorId: postTable.authorId })
+    .from(postTable)
+    .where(eq(postTable.id, postId));
 
-    return deletedPostId;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-    }
-    console.error(error as string);
-  }
-  throw new Error("Failed to Delete Post");
+  return authorId;
 };
