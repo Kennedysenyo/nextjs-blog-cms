@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { AccountPreview } from "@/components/account/account-preview";
 import { UpdateAccountForm } from "@/components/account/UpdateForm";
 import { FormPageHeader } from "@/components/form-page-header";
@@ -17,7 +19,7 @@ const urlList = [
     url: "/account",
   },
 ];
-export default async function SettingsPage() {
+export default async function AccountPage() {
   const user = await fetPersonalAccountDataForEdit();
   return (
     <div className="h-full flex flex-col overflow-y-auto p-4 pb-10">
