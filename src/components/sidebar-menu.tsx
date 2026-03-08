@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { SidebarGroup, SidebarMenuItem } from "./ui/sidebar";
 import {
+  CircleUserRound,
   FilePlus,
   FileText,
   LayoutDashboard,
   List,
   ListPlus,
   LucideProps,
-  Settings,
   UserRoundPlus,
   Users2,
 } from "lucide-react";
@@ -101,9 +101,9 @@ export const SidebarMenu = () => {
 
     {
       id: 5,
-      name: "Settings",
-      icon: Settings,
-      url: "/settings",
+      name: "Account",
+      icon: CircleUserRound,
+      url: "/account",
     },
   ]);
 

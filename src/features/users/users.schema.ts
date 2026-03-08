@@ -54,6 +54,23 @@ export const updateUserInsertAdminSchema = insertUserSchema
     role: z.enum(["user", "admin", "editor"]),
   });
 
-export const updateUserInsertUserSchema = insertUserSchema.pick({
+export const updateUserInsertUserSchema = insertUserSchema
+  .pick({
+    name: true,
+  })
+  .extend({
+    name: z
+      .string()
+      .min(4, {
+        error: (iss) =>
+          iss.input?.length === 0
+            ? "Name is required"
+            : "Name must be > 4 characters",
+      }),
+    email: z.email(),
+  });
+
+export const updatePersonalAccountSchema = insertUserSchema.pick({
   name: true,
+  email: true,
 });

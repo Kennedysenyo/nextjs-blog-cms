@@ -5,7 +5,9 @@ import { userTable } from "@/db/schema";
 import { count, eq, sql, SQL } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { SelectUserAdminEdit, UserTableSelect } from "./users.types";
-import { revalidatePath } from "next/cache";
+import { requireSession } from "../auth/authorize";
+import { email } from "zod";
+import { role } from "better-auth/plugins";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -121,21 +123,48 @@ export const fetchUsersByFilter = async (currentPage: number, term: string) => {
   }
 };
 
-export const deleteUserById = async (id: string) => {
+export const fetchUserDetails = async () => {
   try {
-    const [deletedUserId] = await db
-      .delete(userTable)
-      .where(eq(userTable.id, id))
-      .returning({ id: userTable.id });
-
-    revalidatePath(`/users`);
-
-    return deletedUserId;
+    const session = await requireSession();
+    const userId = session.user.id;
+    const [details] = await db
+      .select({
+        id: userTable.id,
+        name: userTable.name,
+        image: userTable.image,
+        email: userTable.email,
+        role: userTable.role,
+      })
+      .from(userTable)
+      .where(eq(userTable.id, userId));
+    return details;
   } catch (error) {
     if (error instanceof Error) {
-      // console.error(error.message);
+      throw new Error(error.message);
     }
-    // console.error(error as string);
+    notFound();
   }
-  throw new Error("Failed to Delete User");
+};
+
+export const fetPersonalAccountDataForEdit = async () => {
+  try {
+    const session = await requireSession();
+
+    const userId = session.user.id;
+
+    const [data] = await db
+      .select({
+        id: userTable.id,
+        name: userTable.name,
+        email: userTable.email,
+      })
+      .from(userTable)
+      .where(eq(userTable.id, userId));
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    notFound();
+  }
 };

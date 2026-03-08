@@ -35,6 +35,7 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     requireEmailVerification: true,
   },
+
   plugins: [
     nextCookies(),
     admin({

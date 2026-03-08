@@ -13,10 +13,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FilePen } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
-import {
-  deleteUserById,
-  fetchUsersByFilter,
-} from "@/features/users/users.queries";
+import { fetchUsersByFilter } from "@/features/users/users.queries";
+import { deleteUserById } from "@/features/users/users.service";
 
 interface Props {
   currentPage: string;
