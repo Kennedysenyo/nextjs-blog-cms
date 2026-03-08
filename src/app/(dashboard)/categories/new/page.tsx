@@ -1,7 +1,7 @@
 import { FormPageHeader } from "@/components/form-page-header";
-import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";
 import { NewCategoryForm } from "@/components/posts/post-categories/add-form";
+import { requireSession } from "@/features/auth/authorize";
 
 export default async function NewCategoryPage() {
   const session = await requireSession();
@@ -16,20 +16,16 @@ export default async function NewCategoryPage() {
       name: "Dashboard",
       url: "/",
     },
+
     {
       id: 2,
-      name: "Posts",
-      url: "/posts",
+      name: "Categories",
+      url: "/categories",
     },
     {
       id: 3,
-      name: "Categories",
-      url: "/posts/categories",
-    },
-    {
-      id: 4,
       name: "New",
-      url: "/posts/categories/new",
+      url: "/categories/new",
     },
   ];
 

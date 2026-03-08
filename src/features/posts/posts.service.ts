@@ -54,10 +54,9 @@ export const insertPost = async (
     const canonicalUrl = `${baseUrl}/insights/${data.slug}`;
 
     const result = await db.transaction(async (tx) => {
-      const [id] = await tx
+      const [postId] = await tx
         .insert(postTable)
         .values({
-          id: crypto.randomUUID(),
           title: data.title,
           slug: data.slug,
           contentMd: data.contentMd,
@@ -71,8 +70,8 @@ export const insertPost = async (
         })
         .returning({ id: postTable.id });
 
-      await db.insert(postSeoTable).values({
-        postId: id.id,
+      await tx.insert(postSeoTable).values({
+        postId: postId.id,
         metaTitle: data.title,
         metaDescription: data.excerpt,
         canonicalUrl,
@@ -86,9 +85,9 @@ export const insertPost = async (
         twitterImage: data.featuredImage,
         keywords: null,
       });
-      return id.id;
-    });
 
+      return postId.id;
+    });
     return { postId: result, errorMessage: null };
   } catch (error) {
     return handleError(error);
@@ -240,6 +239,7 @@ export const validateEditForm = async (
 };
 
 export const updateMetaData = async (
+  postId: string,
   metadata: CreateSeoInput,
 ): Promise<string | null> => {
   try {
@@ -260,14 +260,17 @@ export const updateMetaData = async (
       any: "update:any",
     });
 
-    await db.update(postSeoTable).set({
-      metaTitle: metadata.metaTitle,
-      metaDescription: metadata.metaDescription,
-      ogTitle: metadata.metaTitle,
-      ogDescription: metadata.metaDescription,
-      twitterTitle: metadata.metaTitle,
-      twitterDescription: metadata.metaDescription,
-    });
+    await db
+      .update(postSeoTable)
+      .set({
+        metaTitle: metadata.metaTitle,
+        metaDescription: metadata.metaDescription,
+        ogTitle: metadata.metaTitle,
+        ogDescription: metadata.metaDescription,
+        twitterTitle: metadata.metaTitle,
+        twitterDescription: metadata.metaDescription,
+      })
+      .where(eq(postSeoTable.postId, postId));
 
     return null;
   } catch (error) {
@@ -280,7 +283,7 @@ export const updateMetaData = async (
 
 export const validateSEOForm = async (
   id: string,
-  prevState: SeoFormResponseType,
+  _prevState: SeoFormResponseType,
   formData: FormData,
 ): Promise<SeoFormResponseType> => {
   const rawInput = Object.fromEntries(formData);
@@ -299,7 +302,7 @@ export const validateSEOForm = async (
     return { errors, errorMessage: null, success: false };
   }
   const { data } = result;
-  const errorMessage = await updateMetaData({
+  const errorMessage = await updateMetaData(id, {
     ...data,
     keywords: data.keywords.split(","),
   });
@@ -344,6 +347,8 @@ export const setPostStatusToArchive = async (
   id: string,
 ): Promise<string | null> => {
   try {
+    await requirePermission({ post: ["archive"] });
+
     await db.transaction(async (tx) => {
       await tx
         .update(postTable)

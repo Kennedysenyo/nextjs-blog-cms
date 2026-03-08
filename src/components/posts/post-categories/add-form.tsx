@@ -7,8 +7,8 @@ import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { slugify } from "@/utils/slugify";
 
 import { useRouter } from "next/navigation";
-import { CategoryFormResponseType } from "@/features/categories/categories.types";
 import { validateCreateCategoryForm } from "@/features/categories/categories.service";
+import { CreateCategoryFormResponseType } from "@/features/categories/categories.types";
 
 interface FormFields {
   name: string;
@@ -43,7 +43,7 @@ export const NewCategoryForm = () => {
     });
   };
 
-  const initialState: CategoryFormResponseType = {
+  const initialState: CreateCategoryFormResponseType = {
     errors: {},
     success: false,
     errorMessage: null,

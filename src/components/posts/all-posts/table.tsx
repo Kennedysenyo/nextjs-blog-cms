@@ -55,7 +55,9 @@ export const PostTable = async ({
             {posts.map((post) => (
               <TableRow key={post.id}>
                 <TableCell className="font-medium">{post.id}</TableCell>
-                <TableCell>{post.title}</TableCell>
+                <TableCell className="max-w-[200px] truncate">
+                  {post.title}
+                </TableCell>
                 <TableCell>{capitalizeFirstLetter(post.category!)}</TableCell>
                 <TableCell>{capitalizeFirstLetter(post.status)}</TableCell>
                 <TableCell className="text-right">
@@ -75,7 +77,7 @@ export const PostTable = async ({
                 {post.id}
               </p>
               <p className="bg-white py-1 border-b border-gray-100 truncate">
-                <span className="bg-sidebar font-semibold p-1 mr-2">
+                <span className="bg-sidebar font-semibold p-1 mr-2 w-1/2 truncate">
                   Title:
                 </span>
                 {post.title}

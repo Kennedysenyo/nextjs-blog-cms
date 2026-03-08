@@ -1,9 +1,11 @@
 import { FormPageHeader } from "@/components/form-page-header";
-import { requireSession } from "@/lib/better-auth/server-auth";
+
 import { redirect } from "next/navigation";
-import { fetchCategoryById } from "@/actions/db/queries";
+
 import { EditCategoryForm } from "@/components/posts/post-categories/edit-form";
 import { UpdateCategoryType } from "@/features/categories/categories.types";
+import { fetchCategoryById } from "@/features/categories/categories.queries";
+import { requireSession } from "@/features/auth/authorize";
 
 export default async function EditCategoryPage({
   params,
@@ -23,20 +25,16 @@ export default async function EditCategoryPage({
       name: "Dashboard",
       url: "/",
     },
+
     {
       id: 2,
-      name: "Posts",
-      url: "/posts",
+      name: "Categories",
+      url: "/categories",
     },
     {
       id: 3,
-      name: "Categories",
-      url: "/posts/categories",
-    },
-    {
-      id: 4,
       name: "Edit",
-      url: `/posts/categories/${id}/edit`,
+      url: `/categories/${id}/edit`,
     },
   ];
   const category = await fetchCategoryById(id);

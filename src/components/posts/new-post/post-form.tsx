@@ -54,7 +54,9 @@ export const NewPostForm = ({ categories }: Props) => {
                 slug: slugify(value),
               },
             }
-          : { ...prev, [name]: value };
+          : name === "slug"
+            ? { ...prev, ...{ slug: slugify(value) } }
+            : { ...prev, [name]: value };
 
       // console.table(data);
       return data;
@@ -62,7 +64,7 @@ export const NewPostForm = ({ categories }: Props) => {
   };
 
   const setValue = (value: string | undefined) => {
-    setFormData((prev) => ({ ...prev, content: value }));
+    setFormData((prev) => ({ ...prev, contentMd: value ? value : "" }));
   };
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
