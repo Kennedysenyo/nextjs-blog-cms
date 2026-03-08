@@ -43,7 +43,7 @@ export default async function SeoPage({
     },
   ];
   return (
-    <>
+    <div className="p-4 md:px-8 h-full flex flex-col overflow-y-auto">
       <FormPageHeader
         title="Edit Metadata"
         subTitle="Update the fields below and click 'Save'"
@@ -55,6 +55,6 @@ export default async function SeoPage({
         metaDescription={metadata.metaDescription}
         keywords={metadata.keywords ? metadata.keywords : []}
       />
-    </>
+    </div>
   );
 }
