@@ -1,4 +1,3 @@
-import { fetchPostById } from "@/actions/db/queries";
 import { notFound } from "next/navigation";
 import { BreadCrumb, BreadCrumbType } from "@/components/breadcrumb";
 import { PostStatus } from "./post-status";
@@ -7,6 +6,7 @@ import { PostContent } from "./post-content";
 import Link from "next/link";
 import { Suspense } from "react";
 import { PostContentSkeleton } from "@/components/skeletons/post-content-skeleton";
+import { fetchPostById } from "@/features/posts/posts.queries";
 
 interface Props {
   postId: string;
@@ -38,19 +38,6 @@ export const MainPreview = async ({ postId }: Props) => {
 
   return (
     <article className="min-h-screen bg-white ">
-      {/* Header Navigation */}
-      {/* <div className="border-b border-gray-100">
-        <div className="container-custom section-padding py-4">
-          <Link
-            href="/insights"
-            className="inline-flex items-center font-semibold text-brand-blue hover:text-brand-green transition-colors"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Insights
-          </Link>
-        </div>
-      </div> */}
-
       {/* Hero Section */}
       <div className="relative bg-gradient-to-b from-brand-blue/5 to-white section-padding">
         <div className="container-custom max-w-3xl">

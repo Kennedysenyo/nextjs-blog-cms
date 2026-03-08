@@ -4,12 +4,11 @@ import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 
-import { postFormValidator } from "@/actions/posts/post-form-validator";
 import { slugify } from "@/utils/slugify";
 
 import { useRouter } from "next/navigation";
-import { CategoryFormResponseType, ResponseType } from "@/types/types";
-import { createCategoryFormValidator } from "@/actions/posts/categories/create-category";
+import { validateCreateCategoryForm } from "@/features/categories/categories.service";
+import { CreateCategoryFormResponseType } from "@/features/categories/categories.types";
 
 interface FormFields {
   name: string;
@@ -44,15 +43,15 @@ export const NewCategoryForm = () => {
     });
   };
 
-  const initialState: CategoryFormResponseType = {
+  const initialState: CreateCategoryFormResponseType = {
     errors: {},
     success: false,
     errorMessage: null,
   };
 
   const [state, formAction, isPending] = useActionState(
-    createCategoryFormValidator,
-    initialState
+    validateCreateCategoryForm,
+    initialState,
   );
 
   useEffect(() => {
@@ -61,7 +60,7 @@ export const NewCategoryForm = () => {
         name: "",
         slug: "",
       });
-      router.push(`/posts/categories`);
+      router.push(`/categories`);
     }
   }, [state, router]);
 

@@ -7,15 +7,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  deleteCategoryById,
-  fetchCategoriesByFilter,
-} from "@/actions/db/queries";
+
 import { capitalizeFirstLetter } from "better-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FilePen } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
+import { fetchCategoriesByFilter } from "@/features/categories/categories.queries";
+import { deleteCategoryById } from "@/features/categories/categories.service";
 
 interface Props {
   currentPage: string;
@@ -52,7 +51,7 @@ export const CategoriesTable = async ({ currentPage, term }: Props) => {
                       size="sm"
                       className="bg-brand-blue hover:bg-brand-blue/90"
                     >
-                      <Link href={`/posts/categories/${cat.id}/edit`}>
+                      <Link href={`/categories/${cat.id}/edit`}>
                         <FilePen className="size-4 text-white" />
                       </Link>
                     </Button>
@@ -98,7 +97,7 @@ export const CategoriesTable = async ({ currentPage, term }: Props) => {
                   size="sm"
                   className="bg-brand-blue hover:bg-brand-blue/90"
                 >
-                  <Link href={`/posts/categories/${cat.id}/edit`}>
+                  <Link href={`/categories/${cat.id}/edit`}>
                     <FilePen className="size-4 text-white" />
                   </Link>
                 </Button>

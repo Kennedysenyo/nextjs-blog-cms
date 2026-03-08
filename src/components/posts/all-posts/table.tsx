@@ -8,12 +8,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DropDown } from "./dropdown";
-import { deletePostById, fetchPostsByFilter } from "@/actions/db/queries";
+
 import { capitalizeFirstLetter } from "better-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Eye, FilePen, Trash2 } from "lucide-react";
+import { Eye, FilePen } from "lucide-react";
 import { DeleteButton } from "../../delete-button";
+import { fetchPostsByFilter } from "@/features/posts/posts.queries";
+import { deletePostById } from "@/features/posts/posts.service";
 
 interface Props {
   currentPage: string;
@@ -31,7 +33,7 @@ export const PostTable = async ({
     Number(currentPage),
     term,
     category,
-    status
+    status,
   );
   return (
     <>
@@ -53,8 +55,10 @@ export const PostTable = async ({
             {posts.map((post) => (
               <TableRow key={post.id}>
                 <TableCell className="font-medium">{post.id}</TableCell>
-                <TableCell>{post.title}</TableCell>
-                <TableCell>{capitalizeFirstLetter(post.category)}</TableCell>
+                <TableCell className="max-w-[200px] truncate">
+                  {post.title}
+                </TableCell>
+                <TableCell>{capitalizeFirstLetter(post.category!)}</TableCell>
                 <TableCell>{capitalizeFirstLetter(post.status)}</TableCell>
                 <TableCell className="text-right">
                   <DropDown id={post.id} />
@@ -73,7 +77,7 @@ export const PostTable = async ({
                 {post.id}
               </p>
               <p className="bg-white py-1 border-b border-gray-100 truncate">
-                <span className="bg-sidebar font-semibold p-1 mr-2">
+                <span className="bg-sidebar font-semibold p-1 mr-2 w-1/2 truncate">
                   Title:
                 </span>
                 {post.title}
@@ -82,7 +86,7 @@ export const PostTable = async ({
                 <span className="bg-sidebar font-semibold p-1 mr-2">
                   Category:
                 </span>
-                {capitalizeFirstLetter(post.category)}
+                {capitalizeFirstLetter(post.category!)}
               </p>
               <p className="bg-white py-1 border-b border-gray-100 truncate">
                 <span className="bg-sidebar font-semibold p-1 mr-2">

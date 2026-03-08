@@ -4,27 +4,22 @@ import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { slugify } from "@/utils/slugify";
-import postgres from "postgres";
 import { capitalizeText } from "@/utils/capitalize-text";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MarkdownEditor } from "../new-post/markdown-editor";
 import { ImageUploader } from "../new-post/image-uploader";
-import { EditResponseType } from "@/types/types";
-import { editFormValidator } from "@/actions/posts/edit-post-form-validator";
-
-interface FormFields {
-  title: string;
-  slug: string;
-  content: string | undefined;
-  excerpt: string;
-  category: string;
-  featuredImage: string;
-}
+import {
+  EditPostInputResponseType,
+  PostSelectEditType,
+  UpdatePostInput,
+} from "@/features/posts/posts.types";
+import { validateEditForm } from "@/features/posts/posts.service";
+import { CategorySelectType } from "@/features/categories/categories.types";
 
 interface Props {
-  categories: postgres.RowList<postgres.Row[]>;
-  post: postgres.Row;
+  categories: CategorySelectType[];
+  post: PostSelectEditType;
   postId: string;
 }
 
@@ -34,12 +29,12 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
     useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [formData, setFormData] = useState<FormFields>(() => ({
+  const [formData, setFormData] = useState<UpdatePostInput>(() => ({
     title: post.title,
     slug: post.slug,
-    content: post.contentMd,
+    contentMd: post.contentMd,
     excerpt: post.excerpt,
-    category: post.categoryId,
+    categoryId: post.categoryId,
     featuredImage: post.featuredImage,
   }));
 
@@ -47,7 +42,7 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
     e:
       | ChangeEvent<HTMLInputElement>
       | ChangeEvent<HTMLTextAreaElement>
-      | ChangeEvent<HTMLSelectElement>
+      | ChangeEvent<HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -128,15 +123,15 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
     }
   };
 
-  const initialState: EditResponseType = {
+  const initialState: EditPostInputResponseType = {
     errors: {},
     success: false,
     errorMessage: null,
   };
 
   const [state, formAction, isPending] = useActionState(
-    editFormValidator.bind(null, postId),
-    initialState
+    validateEditForm.bind(null, postId),
+    initialState,
   );
 
   useEffect(() => {
@@ -147,15 +142,7 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
 
   useEffect(() => {
     if (state.success) {
-      // setFormData({
-      //   title: "",
-      //   slug: "",
-      //   content: undefined,
-      //   excerpt: "",
-      //   category: "",
-      //   featuredImage: "",
-      // });
-      router.push(`/posts/${postId}/preview`);
+      router.replace(`/posts/${postId}/preview`);
     }
   }, [state, router]);
 
@@ -173,10 +160,6 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
             </p>
           )}
         </div>
-
-        {/* <span className="py-1 px-4 border border-gray-100 font-semibold text-brand-blue rounded-lg bg-white self-start mb-4">
-          Draft
-        </span> */}
 
         <form
           action={formAction}
@@ -232,26 +215,26 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
 
               <div>
                 <label
-                  htmlFor="content"
+                  htmlFor="contentMd"
                   className="text-sm font-semibold text-brand-blue"
                 >
                   Content (Markdown)
                 </label>
                 <MarkdownEditor
-                  value={formData.content}
+                  value={formData.contentMd}
                   setValue={setValue}
                   height={400}
                 />
                 <textarea
                   className="hidden"
-                  id="content"
-                  name="content"
+                  id="contentMd"
+                  name="contentMd"
                   readOnly
-                  value={formData.content}
+                  value={formData.contentMd}
                 ></textarea>
-                {state.errors.content && (
+                {state.errors.contentMd && (
                   <small className="text-xs text-red-500">
-                    {state.errors.content}
+                    {state.errors.contentMd}
                   </small>
                 )}
               </div>
@@ -284,7 +267,7 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
                       className={cn(
                         "text-green-500",
                         formData.excerpt.length > 160 && "text-red-500",
-                        formData.excerpt.length < 120 && "text-yellow-500"
+                        formData.excerpt.length < 120 && "text-yellow-500",
                       )}
                     >
                       {formData.excerpt.length}
@@ -315,16 +298,16 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
 
               <div>
                 <label
-                  htmlFor="category"
+                  htmlFor="categoryId"
                   className="text-sm font-semibold text-brand-blue"
                 >
                   Category
                 </label>
                 <select
-                  id="category"
-                  name="category"
+                  id="categoryId"
+                  name="categoryId"
                   className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all bgsidebar invalid:text-gray-100"
-                  value={formData.category}
+                  value={formData.categoryId}
                   onChange={handleFormFieldChange}
                 >
                   <option disabled hidden value="">
@@ -336,9 +319,9 @@ export const EditPostForm = ({ post, categories, postId }: Props) => {
                     </option>
                   ))}
                 </select>
-                {state.errors.category && (
+                {state.errors.categoryId && (
                   <small className="text-xs text-red-500">
-                    {state.errors.category}
+                    {state.errors.categoryId}
                   </small>
                 )}
               </div>

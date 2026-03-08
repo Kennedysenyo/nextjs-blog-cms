@@ -1,29 +1,28 @@
 import { sendEmail } from "@/actions/emails/email-verification";
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
+
+import { admin } from "better-auth/plugins";
+import { adminRole, editorRole, fullAc, userRole } from "@/auth/permissions";
 import { Pool } from "pg";
 
-const dbURL = process.env.DATABASE_URL;
-
-if (!dbURL) {
+const dbUrl = process.env.DATABASE_URL;
+if (!dbUrl) {
   throw new Error(
-    "DATABASE_URL environment variable is required to connect to db!"
+    "DATABASE_URL environment variable is required for better auth configurateion!",
   );
 }
 
-const pool = new Pool({
-  connectionString: dbURL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
-
 export const auth = betterAuth({
-  database: pool,
-
+  database: new Pool({
+    connectionString: dbUrl,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  }),
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
-      await sendEmail({
+      void sendEmail({
         to: user.email,
         subject: "Verify your email address",
         text: url,
@@ -36,5 +35,18 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     requireEmailVerification: true,
   },
-  plugins: [nextCookies()],
+
+  plugins: [
+    nextCookies(),
+    admin({
+      ac: fullAc,
+      roles: {
+        admin: adminRole,
+        editor: editorRole,
+        user: userRole,
+      },
+      adminRoles: ["admin"],
+      adminUserIds: ["W8rqu1pphWDsetczc2A5VIxN4m65yDFk"],
+    }),
+  ],
 });

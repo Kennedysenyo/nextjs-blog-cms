@@ -1,11 +1,12 @@
-import { fetchCategoriesAndPostsTotalPages } from "@/actions/db/queries";
 import { AddButton } from "@/components/AddButton";
 import { Filter } from "@/components/posts/all-posts/filter";
 import Pagination from "@/components/posts/all-posts/Paginations";
 
 import { PostTable } from "@/components/posts/all-posts/table";
 import { PostTableSkeleton } from "@/components/skeletons/post-table-skeleton";
-import { requireSession } from "@/lib/better-auth/server-auth";
+import { requireSession } from "@/features/auth/authorize";
+import { fetchCategoriesAndPostsTotalPages } from "@/features/posts/posts.queries";
+
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -26,14 +27,17 @@ export default async function PostsPage({
   }
 
   const params = await searchParams;
-  const term = Array.isArray(params) ? (params[0] ?? "") : params.query || "";
+  const term = Array.isArray(params.query)
+    ? params.query[0]
+    : params.query || "";
   const category = params.cat || "";
   const status = params.status || "";
   const currentPage = params.page || "1";
+
   const { totalPages, categories } = await fetchCategoriesAndPostsTotalPages(
     term,
     category,
-    status
+    status,
   );
   // console.table(posts);
   return (

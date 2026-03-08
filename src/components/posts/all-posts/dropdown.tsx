@@ -7,8 +7,9 @@ import {
 import { EllipsisVertical, Eye, FilePen } from "lucide-react";
 import Link from "next/link";
 
-import { deletePostById } from "@/actions/db/queries";
 import { DeleteButton } from "@/components/delete-button";
+import { deletePostById } from "@/features/posts/posts.service";
+
 interface Props {
   id: string;
 }

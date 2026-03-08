@@ -1,5 +1,5 @@
-import { fetchPostStatus } from "@/actions/db/queries";
 import { ActionsBar } from "@/components/posts/preview-post/actions-bar";
+import { fetchPostStatus } from "@/features/posts/posts.queries";
 import { ReactNode } from "react";
 
 export default async function PreviewLayout({

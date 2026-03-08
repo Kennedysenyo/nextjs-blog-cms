@@ -1,28 +1,31 @@
 "use client";
 
-import {
-  SeoFormResponseType,
-  validateSEOForm,
-} from "@/actions/posts/seo-form-validator";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { validateSEOForm } from "@/features/posts/posts.service";
+import {
+  CreateSeoInput,
+  SeoFormResponseType,
+} from "@/features/posts/posts.types";
 import { cn } from "@/lib/utils";
 import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 
-interface Props {
+interface Props extends CreateSeoInput {
   id: string;
-  title: string;
-  description: string;
-  keywords: string;
 }
 
-export const SEOForm = ({ id, title, description, keywords }: Props) => {
-  const [formData, setFormData] = useState({
-    title: title,
-    description: description,
-    keywords: keywords,
+export const SEOForm = ({
+  id,
+  metaTitle,
+  metaDescription,
+  keywords,
+}: Props) => {
+  const [formData, setFormData] = useState<CreateSeoInput>({
+    metaTitle,
+    metaDescription,
+    keywords,
   });
 
   const router = useRouter();
@@ -30,18 +33,24 @@ export const SEOForm = ({ id, title, description, keywords }: Props) => {
   const [keywordsCount, setKeywordsCount] = useState(
     () =>
       formData.keywords
+        .join()
         .split(/\s*,\s*/)
         .map((k) => k.trim())
-        .filter((k) => k.length > 0).length
+        .filter((k) => k.length > 0).length,
   );
 
   const handleFormFieldChange = (
-    e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>
+    e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => {
-      const data = { ...prev, [name]: value };
-      setKeywordsCount(data.keywords.split(/\s*,\s*/).filter(Boolean).length);
+      const data = { ...prev, [name]: name === "keywords" ? [value] : value };
+      setKeywordsCount(
+        data.keywords
+          .join(" ")
+          .split(/\s*,\s*/)
+          .filter(Boolean).length,
+      );
       return data;
     });
   };
@@ -53,7 +62,7 @@ export const SEOForm = ({ id, title, description, keywords }: Props) => {
   };
   const [state, formAction, isPending] = useActionState(
     validateSEOForm.bind(null, id),
-    initialState
+    initialState,
   );
 
   useEffect(() => {
@@ -85,60 +94,62 @@ export const SEOForm = ({ id, title, description, keywords }: Props) => {
             <div className="space-y-6 p-2 md:p-4 bg-white">
               <div>
                 <label
-                  htmlFor="title"
+                  htmlFor="metaTitle"
                   className="text-sm font-semibold text-brand-blue"
                 >
                   Meta Title
                 </label>
                 <input
-                  id="title"
+                  id="metaTitle"
                   type="text"
-                  name="title"
+                  name="metaTitle"
                   autoComplete="off"
                   className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all"
-                  value={formData.title}
+                  value={formData.metaTitle!}
                   onChange={handleFormFieldChange}
                 />
-                {state.errors.title && (
+                {state.errors.metaTitle && (
                   <small className="text-xs text-red-500">
-                    {state.errors.title}
+                    {state.errors.metaTitle}
                   </small>
                 )}
               </div>
 
               <div>
                 <label
-                  htmlFor="description"
+                  htmlFor="metaDescription"
                   className="text-sm font-semibold text-brand-blue"
                 >
                   Meta Description
                 </label>
                 <textarea
-                  id="description"
-                  name="description"
+                  id="metaDescription"
+                  name="metaDescription"
                   rows={4}
                   autoComplete="off"
                   placeholder="e.g., There are ..."
                   className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all resize-none"
-                  value={formData.description}
+                  value={formData.metaDescription!}
                   onChange={handleFormFieldChange}
                 />
 
                 <div className="flex items-center space-between">
-                  {state.errors.description && (
+                  {state.errors.metaDescription && (
                     <small className="text-xs text-red-500">
-                      {state.errors.description}
+                      {state.errors.metaDescription}
                     </small>
                   )}
                   <p className="ml-auto ">
                     <span
                       className={cn(
                         "text-green-500",
-                        formData.description.length > 160 && "text-red-500",
-                        formData.description.length < 120 && "text-yellow-500"
+                        formData.metaDescription!.length > 160 &&
+                          "text-red-500",
+                        formData.metaDescription!.length < 120 &&
+                          "text-yellow-500",
                       )}
                     >
-                      {formData.description.length}
+                      {formData.metaDescription!.length}
                     </span>
                     /160
                   </p>
@@ -153,7 +164,7 @@ export const SEOForm = ({ id, title, description, keywords }: Props) => {
                 </label>
                 <br />
                 <small className="text-sm italic">
-                  (add comma separated keywords (e.g., word1,word2,..etc.))
+                  (add comma separated keywords (e.g., word1, word2,..etc.))
                 </small>
                 <textarea
                   id="keywords"
@@ -162,7 +173,7 @@ export const SEOForm = ({ id, title, description, keywords }: Props) => {
                   autoComplete="off"
                   placeholder="e.g., There are ..."
                   className="bg-white w-full px-4 py-3 rounded-sm border border-gray-200 focus:border-brand-green focus:ring-4 focus:ring-brand-green/5 outline-none transition-all resize-none"
-                  value={formData.keywords}
+                  value={formData.keywords.join(" ")}
                   onChange={handleFormFieldChange}
                 />
 
@@ -176,7 +187,7 @@ export const SEOForm = ({ id, title, description, keywords }: Props) => {
                     <span
                       className={cn(
                         "text-green-500",
-                        keywordsCount > 10 && "text-red-500"
+                        keywordsCount > 10 && "text-red-500",
                       )}
                     >
                       {keywordsCount}

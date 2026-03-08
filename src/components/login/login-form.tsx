@@ -5,12 +5,13 @@ import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
-import { FormStateType, validateLogin } from "@/actions/auth/login";
+import { LoginUserFormState } from "@/features/auth/auth.types";
+import { validateLogin } from "@/features/auth/auth.service";
 
 export function LoginForm() {
   const router = useRouter();
 
-  const initialState: FormStateType = {
+  const initialState: LoginUserFormState = {
     errors: {},
     errorMessage: null,
     success: false,
@@ -28,7 +29,7 @@ export function LoginForm() {
 
   const [state, formAction, isPending] = useActionState(
     validateLogin,
-    initialState
+    initialState,
   );
 
   useEffect(() => {

@@ -16,12 +16,11 @@ import {
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
-import postgres from "postgres";
 
 interface Props {
   size?: "sm";
   id: string;
-  handler: (id: string) => Promise<postgres.Row>;
+  handler: (id: string) => Promise<string | null>;
   dialogTitle: string;
   dialogDescription: string;
 }
@@ -32,17 +31,15 @@ export const DeleteButton = ({
   dialogTitle,
   dialogDescription,
 }: Props) => {
-  // TODO:  Change delete to delete optimistically
-
   const [pending, startTranstion] = useTransition();
 
   const handleDelete = () => {
     startTranstion(async () => {
-      const deletedPost = await handler(id);
-      if (deletedPost.id) {
-        toast("Deleted Successfully");
+      const res = await handler(id);
+      if (!res) {
+        toast.success("Deleted Successfully");
       } else {
-        toast("Error! Delete Unsuccessful");
+        toast.error(res);
       }
     });
   };

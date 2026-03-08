@@ -3,28 +3,22 @@ import { Save } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
-
 import { slugify } from "@/utils/slugify";
-
 import { useRouter } from "next/navigation";
-import { CategoryFormResponseType } from "@/types/types";
-import { createCategoryFormValidator } from "@/actions/posts/categories/create-category";
-import postgres from "postgres";
-import { editCategoryFormValidator } from "@/actions/posts/categories/edit-category";
-
-interface FormFields {
-  name: string;
-  slug: string;
-}
+import {
+  UpdateCategoryFormResponseType,
+  UpdateCategoryType,
+} from "@/features/categories/categories.types";
+import { validateEditCategoryForm } from "@/features/categories/categories.service";
 
 interface Props {
-  category: postgres.Row;
+  category: UpdateCategoryType;
 }
 
 export const EditCategoryForm = ({ category }: Props) => {
   const router = useRouter();
 
-  const [formData, setFormData] = useState<FormFields>({
+  const [formData, setFormData] = useState<Omit<UpdateCategoryType, "id">>({
     name: category.name,
     slug: category.slug,
   });
@@ -49,15 +43,15 @@ export const EditCategoryForm = ({ category }: Props) => {
     });
   };
 
-  const initialState: CategoryFormResponseType = {
+  const initialState: UpdateCategoryFormResponseType = {
     errors: {},
     success: false,
     errorMessage: null,
   };
 
   const [state, formAction, isPending] = useActionState(
-    editCategoryFormValidator.bind(null, category.id),
-    initialState
+    validateEditCategoryForm.bind(null, category.id),
+    initialState,
   );
 
   useEffect(() => {
@@ -66,7 +60,7 @@ export const EditCategoryForm = ({ category }: Props) => {
         name: "",
         slug: "",
       });
-      router.push(`/posts/categories`);
+      router.push(`/categories`);
     }
   }, [state, router]);
 

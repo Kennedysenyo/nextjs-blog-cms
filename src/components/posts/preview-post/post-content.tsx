@@ -1,5 +1,5 @@
-import { fetchPostContentById } from "@/actions/db/queries";
 import { MarkdownRenderer } from "@/components/markdown/MarkdownRenderer";
+import { fetchPostContentById } from "@/features/posts/posts.queries";
 const mediaConfig = {
   enableLazyLoading: true,
   sandboxIframes: true,

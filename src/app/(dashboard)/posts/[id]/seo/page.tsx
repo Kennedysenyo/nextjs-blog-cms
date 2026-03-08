@@ -1,6 +1,6 @@
-import { fetchMetadataByPostId } from "@/actions/db/queries";
 import { FormPageHeader } from "@/components/form-page-header";
 import { SEOForm } from "@/components/posts/post-seo/seo-form";
+import { fetchMetadataByPostId } from "@/features/posts/posts.queries";
 import { requireSession } from "@/lib/better-auth/server-auth";
 import { redirect } from "next/navigation";
 
@@ -51,9 +51,9 @@ export default async function SeoPage({
       />
       <SEOForm
         id={id}
-        title={metadata.metaTitle}
-        description={metadata.metaDescription}
-        keywords={metadata.keywords ? metadata.keywords.join(",") : ""}
+        metaTitle={metadata.metaTitle}
+        metaDescription={metadata.metaDescription}
+        keywords={metadata.keywords ? metadata.keywords : []}
       />
     </>
   );
