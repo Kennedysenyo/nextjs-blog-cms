@@ -60,7 +60,7 @@ export const NewCategoryForm = () => {
         name: "",
         slug: "",
       });
-      router.push(`/posts/categories`);
+      router.push(`/categories`);
     }
   }, [state, router]);
 

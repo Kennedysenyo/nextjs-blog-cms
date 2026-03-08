@@ -33,7 +33,7 @@ export default async function CategoriesPage({
     <div className="p-4 md:px-8 h-full flex flex-col overflow-y-auto">
       <div className="p-4 flex justify-end">
         <Filter />
-        <AddButton url="/posts/categories/new" label="Add Category" />
+        <AddButton url="/categories/new" label="Add Category" />
       </div>
       <Suspense key={currentPage + term} fallback={<CategoriesTableSkeleton />}>
         <CategoriesTable currentPage={currentPage} term={term} />

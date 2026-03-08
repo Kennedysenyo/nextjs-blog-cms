@@ -122,25 +122,6 @@ export const fetchCategoriesByFilter = async (
   }
 };
 
-export const deleteCategoryById = async (id: string) => {
-  try {
-    const [deletedCategoryId] = await db
-      .delete(postsCategoriesTable)
-      .where(eq(postsCategoriesTable.id, id))
-      .returning({ id: postsCategoriesTable.id });
-
-    revalidatePath(`/posts/categories`);
-
-    return deletedCategoryId;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-    }
-    console.error(error as string);
-  }
-  throw new Error("Failed to Delete Post");
-};
-
 export const fetchCategoryById = async (id: string) => {
   try {
     const [category] = await db

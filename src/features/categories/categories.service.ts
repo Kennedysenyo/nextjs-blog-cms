@@ -19,6 +19,7 @@ import { postsCategoriesTable } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { requirePermission, requireSession } from "../auth/authorize";
+import { revalidatePath } from "next/cache";
 
 export const addCategory = async ({
   name,
@@ -144,4 +145,32 @@ export const validateEditCategoryForm = async (
     return { errors: {}, success: false, errorMessage };
   }
   return { errors: {}, success: true, errorMessage: null };
+};
+
+export const deleteCategoryById = async (
+  id: string,
+): Promise<string | null> => {
+  try {
+    await requirePermission({ category: ["delete"] });
+
+    const [deletedCategoryId] = await db
+      .delete(postsCategoriesTable)
+      .where(eq(postsCategoriesTable.id, id))
+      .returning({ id: postsCategoriesTable.id });
+
+    revalidatePath(`/posts/categories`);
+
+    if (!deletedCategoryId) {
+      throw new Error("Error deleting category");
+    }
+    return null;
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === "Unauthorized" || error.message === "Forbidden") {
+        return error.message;
+      }
+      return "Failed to Delete Post";
+    }
+    return error as string;
+  }
 };
