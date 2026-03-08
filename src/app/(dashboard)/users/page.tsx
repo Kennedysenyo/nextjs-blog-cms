@@ -23,7 +23,9 @@ export default async function UsersPage({
   }
 
   const params = await searchParams;
-  const term = Array.isArray(params) ? (params[0] ?? "") : params.query || "";
+  const term = Array.isArray(params.query)
+    ? params.query[0]
+    : params.query || "";
 
   const currentPage = params.page || "1";
   const totalPages = await fetchUsersTotalPages(term);

@@ -24,7 +24,9 @@ export default async function CategoriesPage({
   }
 
   const params = await searchParams;
-  const term = Array.isArray(params) ? (params[0] ?? "") : params.query || "";
+  const term = Array.isArray(params.query)
+    ? params.query[0]
+    : params.query || "";
 
   const currentPage = params.page || "1";
   const totalPages = await fetchCategoriesTotalPages(term);
