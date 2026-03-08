@@ -1,36 +1,36 @@
-import { CloudUpload, FilePen, FileText } from "lucide-react";
+import { CloudUpload, EyeOff, FilePen, FileText } from "lucide-react";
 import { Card } from "./card";
+import { fetchCardsData } from "@/features/posts/posts.queries";
 
-const cardData = [
-  { id: 1, figure: "45", title: "All Posts", color: "#1e3a8a", icon: FileText },
-  {
-    id: 2,
-    figure: "25",
-    title: "Published Posts",
-    color: "#28a745",
-    icon: CloudUpload,
-  },
-  {
-    id: 3,
-    figure: "20",
-    title: "Drafts",
-    color: "#e9b226ff",
-    icon: FilePen,
-  },
-];
-
-export const CardGrid = () => {
+export const CardGrid = async () => {
+  const [allTotal, publishedTotal, draftsTotal, archivedTotal] =
+    await fetchCardsData();
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">
-      {cardData.map((data) => (
-        <Card
-          key={data.id}
-          figure={data.figure}
-          title={data.title}
-          color={data.color}
-          icon={data.icon}
-        />
-      ))}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4 mt-4">
+      <Card
+        figure={allTotal}
+        title="All Posts"
+        color="#1e3a8a"
+        icon={FileText}
+      />
+      <Card
+        figure={publishedTotal}
+        title="Published"
+        color="#28a745"
+        icon={CloudUpload}
+      />
+      <Card
+        figure={draftsTotal}
+        title="Drafts"
+        color="rgb(212, 165, 45)"
+        icon={FilePen}
+      />
+      <Card
+        figure={archivedTotal}
+        title="Archived"
+        color="#a226e9"
+        icon={EyeOff}
+      />
     </div>
   );
 };

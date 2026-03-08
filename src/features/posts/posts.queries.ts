@@ -7,10 +7,14 @@ import {
   postTable,
   userTable,
 } from "@/db/schema";
-import { count, eq, ilike, sql, SQL } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { count, desc, eq, sql, SQL } from "drizzle-orm";
+
 import { notFound } from "next/navigation";
 import { fetchCategories } from "../categories/categories.queries";
+import {
+  SelectRecentDraftPostType,
+  SelectRecentPublishedPostType,
+} from "./posts.types";
 
 export const fetchPostById = async (id: string) => {
   try {
@@ -280,4 +284,91 @@ export const fetchPostAuthorId = async (postId: string) => {
     .where(eq(postTable.id, postId));
 
   return authorId;
+};
+
+const fetchTotalPosts = async (): Promise<number> => {
+  const [result] = await db.select({ total: count() }).from(postTable);
+  return result.total;
+};
+
+const fetchTotalPublishedPosts = async (): Promise<number> => {
+  const [result] = await db
+    .select({ total: count() })
+    .from(postTable)
+    .where(eq(postTable.status, "published"));
+  return result.total;
+};
+
+const fetchTotalDraftPosts = async (): Promise<number> => {
+  const [result] = await db
+    .select({ total: count() })
+    .from(postTable)
+    .where(eq(postTable.status, "draft"));
+  return result.total;
+};
+
+const fetchTotalArchivedPosts = async (): Promise<number> => {
+  const [result] = await db
+    .select({ total: count() })
+    .from(postTable)
+    .where(eq(postTable.status, "archived"));
+  return result.total;
+};
+
+export const fetchCardsData = async () => {
+  const [allTotal, publishedTotal, draftsTotal, archivedTotal] =
+    await Promise.all([
+      fetchTotalPosts(),
+      fetchTotalPublishedPosts(),
+      fetchTotalDraftPosts(),
+      fetchTotalArchivedPosts(),
+    ]);
+
+  return [allTotal, publishedTotal, draftsTotal, archivedTotal];
+};
+
+export const fetchRecentPublished = async (): Promise<
+  SelectRecentPublishedPostType[]
+> => {
+  const posts = await db
+    .select({
+      id: postTable.id,
+      title: postTable.title,
+      publishedAt: postTable.publishedAt,
+      author: userTable.name,
+      image: userTable.image,
+    })
+    .from(postTable)
+    .leftJoin(userTable, eq(postTable.authorId, userTable.id))
+    .where(eq(postTable.status, "published"))
+    .orderBy(desc(postTable.publishedAt))
+    .limit(5);
+  return posts;
+};
+
+export const fetchRecentDrafts = async (): Promise<
+  SelectRecentDraftPostType[]
+> => {
+  const posts = await db
+    .select({
+      id: postTable.id,
+      title: postTable.title,
+      createdAt: postTable.createdAt,
+      author: userTable.name,
+      image: userTable.image,
+    })
+    .from(postTable)
+    .leftJoin(userTable, eq(postTable.authorId, userTable.id))
+    .where(eq(postTable.status, "draft"))
+    .orderBy(desc(postTable.createdAt))
+    .limit(5);
+  return posts;
+};
+
+export const fetchRecents = async () => {
+  const [recentPublished, recentDrafts] = await Promise.all([
+    fetchRecentPublished(),
+    fetchRecentDrafts(),
+  ]);
+  return { recentPublished, recentDrafts };
 };

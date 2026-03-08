@@ -49,3 +49,19 @@ export interface SeoFormResponseType {
 // SELECT (QUERY)
 
 export type PostSelectEditType = CreatePostInput;
+
+export type SelectRecentPublishedPostType = {
+  id: string;
+  title: string;
+  publishedAt: Date | null;
+  author: string | null;
+  image: string | null;
+};
+
+export type SelectRecentDraftPostType = {
+  id: string;
+  title: string;
+  createdAt: Date;
+  author: string | null;
+  image: string | null;
+};
