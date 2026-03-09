@@ -41,7 +41,7 @@ export const createPostSchema = insertPostSchema
             ? "Excerpt is required"
             : "Excerpt must be > 120 characters",
       })
-      .max(160, "Excerpt must be between 160 and 120 characters"),
+      .max(160, "Excerpt must be between 120 and 160 characters"),
     featuredImage: z.url(),
   });
 
