@@ -14,7 +14,7 @@ import {
   Users2,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
 
 interface SubRoutes {

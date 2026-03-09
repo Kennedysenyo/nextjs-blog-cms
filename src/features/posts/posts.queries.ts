@@ -1,12 +1,12 @@
 "use server";
 
-import { db } from "@/db/db";
+import { db } from "@/lib/db/db";
 import {
   postsCategoriesTable,
   postSeoTable,
   postTable,
   userTable,
-} from "@/db/schema";
+} from "@/lib/db/schema";
 import { count, desc, eq, sql, SQL } from "drizzle-orm";
 
 import { notFound } from "next/navigation";
@@ -272,7 +272,7 @@ export const fetchPostsByFilter = async (
 
     return posts;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw new Error("Error fetching posts");
   }
 };

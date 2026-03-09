@@ -1,4 +1,4 @@
-import { userTable } from "@/db/schema";
+import { userTable } from "@/lib/db/schema";
 import { createInsertSchema } from "drizzle-zod";
 import z from "zod";
 
@@ -59,14 +59,12 @@ export const updateUserInsertUserSchema = insertUserSchema
     name: true,
   })
   .extend({
-    name: z
-      .string()
-      .min(4, {
-        error: (iss) =>
-          iss.input?.length === 0
-            ? "Name is required"
-            : "Name must be > 4 characters",
-      }),
+    name: z.string().min(4, {
+      error: (iss) =>
+        iss.input?.length === 0
+          ? "Name is required"
+          : "Name must be > 4 characters",
+    }),
     email: z.email(),
   });
 

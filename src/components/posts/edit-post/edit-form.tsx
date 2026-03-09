@@ -3,10 +3,10 @@ import { Save } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
-import { slugify } from "@/utils/slugify";
-import { capitalizeText } from "@/utils/capitalize-text";
+import { slugify } from "@/lib/utils/slugify";
+import { capitalizeText } from "@/lib/utils/capitalize-text";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { MarkdownEditor } from "../new-post/markdown-editor";
 import { ImageUploader } from "../new-post/image-uploader";
 import {

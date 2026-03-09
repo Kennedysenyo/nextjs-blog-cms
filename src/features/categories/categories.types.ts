@@ -1,6 +1,6 @@
 import z from "zod";
 import { createCategoryInsertSchema } from "./categories.schema";
-import { CategoriesSelect } from "@/db/schema";
+import { CategoriesSelect } from "@/lib/db/schema";
 
 // Category Creation
 export type InsertCategoryType = z.infer<typeof createCategoryInsertSchema>;

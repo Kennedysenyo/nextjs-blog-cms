@@ -2,7 +2,7 @@
 import React from "react";
 import { MediaType } from "@/types/markdown";
 import { BaseMediaProps } from "@/types/markdown";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { TwitterEmbed } from "./TwitterEmbed";
 
 interface SocialEmbedProps extends BaseMediaProps {
@@ -27,7 +27,7 @@ export const SocialEmbed: React.FC<SocialEmbedProps> = ({
 
       case "spotify":
         const spotifyMatch = url.match(
-          /spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)(\?|$)/
+          /spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)(\?|$)/,
         );
         if (spotifyMatch) {
           return `https://open.spotify.com/embed/${spotifyMatch[1]}/${spotifyMatch[2]}`;
@@ -66,7 +66,7 @@ export const SocialEmbed: React.FC<SocialEmbedProps> = ({
       <div
         className={cn(
           "relative overflow-hidden rounded-lg bg-gray-50 dark:bg-gray-900",
-          getAspectRatio()
+          getAspectRatio(),
         )}
       >
         <iframe

@@ -1,7 +1,7 @@
 // components/markdown/MediaComponents/YouTubeEmbed.tsx
 import React from "react";
 import { WithoutUrlBaseMediaProps } from "@/types/markdown";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 interface YouTubeEmbedProps extends WithoutUrlBaseMediaProps {
   videoId: string;
@@ -31,7 +31,7 @@ export const YouTubeEmbed: React.FC<YouTubeEmbedProps> = ({
       autoplay: autoPlay ? "1" : "0",
       playsinline: "1",
       // enablejsapi: "1",
-    }
+    },
   ).toString()}`;
   // console.log("The embeded url", embedUrl);
 
@@ -40,7 +40,7 @@ export const YouTubeEmbed: React.FC<YouTubeEmbedProps> = ({
       <div
         className={cn(
           "relative overflow-hidden rounded-lg bg-gray-900",
-          aspectRatios[aspectRatio]
+          aspectRatios[aspectRatio],
         )}
       >
         <iframe

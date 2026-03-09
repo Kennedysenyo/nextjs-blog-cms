@@ -15,7 +15,7 @@ import { SocialEmbed } from "./MediaComponents/SocialEmbed";
 import { FileDownload } from "./MediaComponents/FileDownload";
 import { ExternalLink } from "./MediaComponents/ExternalLink";
 
-import { remarkMediaEmbedder } from "@/lib/remark-media-embedder";
+import { remarkMediaEmbedder } from "@/lib/remark/remark-media-embedder";
 import { markdownSchema } from "@/lib/markdown/sanitize";
 
 interface MarkdownRendererProps {

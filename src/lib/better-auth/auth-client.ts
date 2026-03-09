@@ -1,4 +1,9 @@
-import { adminRole, editorRole, fullAc, userRole } from "@/auth/permissions";
+import {
+  adminRole,
+  editorRole,
+  fullAc,
+  userRole,
+} from "@/features/auth/permissions";
 import { createAuthClient } from "better-auth/react";
 import { adminClient } from "better-auth/client/plugins";
 

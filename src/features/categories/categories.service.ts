@@ -14,8 +14,8 @@ import {
 } from "@/features/categories/categories.schema";
 import z from "zod";
 
-import { db } from "@/db/db";
-import { postsCategoriesTable } from "@/db/schema";
+import { db } from "@/lib/db/db";
+import { postsCategoriesTable } from "@/lib/db/schema";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { requirePermission, requireSession } from "../auth/authorize";

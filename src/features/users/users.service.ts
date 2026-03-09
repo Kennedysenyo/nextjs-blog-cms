@@ -19,8 +19,8 @@ import {
 } from "./users.schema";
 import z from "zod";
 import { requirePermission, requireSelfOrPermission } from "../auth/authorize";
-import { db } from "@/db/db";
-import { userTable } from "@/db/schema";
+import { db } from "@/lib/db/db";
+import { userTable } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";

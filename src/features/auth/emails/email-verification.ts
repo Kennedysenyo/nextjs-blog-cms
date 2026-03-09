@@ -1,6 +1,6 @@
 "use server";
 
-import EmailVerification from "@/emails/email-verification";
+import EmailVerification from "@/components/emails/email-verification";
 import { resend } from "@/lib/resend/resend";
 
 export async function sendEmail({

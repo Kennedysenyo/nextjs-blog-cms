@@ -5,7 +5,7 @@ import {
   updateUserInsertAdminSchema,
 } from "./users.schema";
 import { InferSelectModel } from "drizzle-orm";
-import { userTable } from "@/db/schema";
+import { userTable } from "@/lib/db/schema";
 
 export type CreateUserFormType = z.infer<typeof createUserInsertSchema>;
 export type CreateUserInserType = Omit<CreateUserFormType, "confirmPassword">;

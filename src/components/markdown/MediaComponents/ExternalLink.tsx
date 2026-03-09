@@ -1,7 +1,7 @@
 // components/markdown/MediaComponents/ExternalLink.tsx
 import React from "react";
 import { ExternalLink as ExternalLinkIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 interface ExternalLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   children: React.ReactNode;
@@ -25,7 +25,7 @@ export const ExternalLink: React.FC<ExternalLinkProps> = ({
         "underline underline-offset-2 hover:underline-offset-4",
         "transition-all duration-200",
         "inline-flex items-center gap-1",
-        className
+        className,
       )}
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noopener noreferrer" : undefined}

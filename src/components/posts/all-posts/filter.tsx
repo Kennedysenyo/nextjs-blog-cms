@@ -1,7 +1,7 @@
 "use client";
 
 import { CategorySelectType } from "@/features/categories/categories.types";
-import { capitalizeText } from "@/utils/capitalize-text";
+import { capitalizeText } from "@/lib/utils/capitalize-text";
 import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 

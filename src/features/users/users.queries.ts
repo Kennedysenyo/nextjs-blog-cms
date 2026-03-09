@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@/db/db";
-import { userTable } from "@/db/schema";
+import { db } from "@/lib/db/db";
+import { userTable } from "@/lib/db/schema";
 import { count, eq, sql, SQL } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { SelectUserAdminEdit, UserTableSelect } from "./users.types";

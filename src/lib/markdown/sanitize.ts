@@ -1,4 +1,3 @@
-// lib/markdown/sanitize.ts
 import { defaultSchema } from "rehype-sanitize";
 
 export const markdownSchema = {

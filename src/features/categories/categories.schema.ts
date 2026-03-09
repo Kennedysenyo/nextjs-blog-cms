@@ -1,4 +1,4 @@
-import { postsCategoriesTable } from "@/db/schema";
+import { postsCategoriesTable } from "@/lib/db/schema";
 import { createInsertSchema } from "drizzle-zod";
 import z from "zod";
 

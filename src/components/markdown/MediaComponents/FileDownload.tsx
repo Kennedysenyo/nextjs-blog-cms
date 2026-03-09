@@ -2,7 +2,7 @@
 import React from "react";
 import { FileText, Download, File, Archive, FileImage } from "lucide-react";
 import { BaseMediaProps } from "@/types/markdown";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 interface FileDownloadProps extends BaseMediaProps {
   fileName: string;
@@ -60,7 +60,7 @@ export const FileDownload: React.FC<FileDownloadProps> = ({
       className={cn(
         "flex items-center justify-between p-4 rounded-lg border my-4",
         getFileColor(),
-        className
+        className,
       )}
       style={style}
     >

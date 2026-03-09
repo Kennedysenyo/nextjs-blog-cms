@@ -4,7 +4,7 @@ import { Button } from "../../ui/button";
 import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 
-import { slugify } from "@/utils/slugify";
+import { slugify } from "@/lib/utils/slugify";
 
 import { useRouter } from "next/navigation";
 import { validateCreateCategoryForm } from "@/features/categories/categories.service";

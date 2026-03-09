@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@/db/db";
-import { postsCategoriesTable } from "@/db/schema";
+import { db } from "@/lib/db/db";
+import { postsCategoriesTable } from "@/lib/db/schema";
 
 import { count, eq, ilike, sql, SQL } from "drizzle-orm";
 import { revalidatePath } from "next/cache";

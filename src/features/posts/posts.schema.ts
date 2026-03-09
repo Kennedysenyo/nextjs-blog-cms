@@ -1,4 +1,4 @@
-import { postSeoTable, postTable } from "@/db/schema";
+import { postSeoTable, postTable } from "@/lib/db/schema";
 import { createInsertSchema } from "drizzle-zod";
 import z from "zod";
 

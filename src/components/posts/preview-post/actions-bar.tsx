@@ -8,7 +8,7 @@ import {
 } from "@/features/posts/posts.service";
 
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { ChartLine, CloudUpload, EyeOff, FilePen } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { WithoutUrlBaseMediaProps } from "@/types/markdown";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 interface MarkdownImageProps extends WithoutUrlBaseMediaProps {
   alt: string;
@@ -43,7 +43,7 @@ export const MarkdownImage: React.FC<MarkdownImageProps> = ({
             className={cn(
               "w-full h-auto object-contain transition-opacity duration-300",
               isLoading ? "opacity-0" : "opacity-100",
-              "max-h-[70vh]"
+              "max-h-[70vh]",
             )}
             loading={enableLazyLoading ? "lazy" : "eager"}
             onLoad={() => setIsLoading(false)}

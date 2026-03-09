@@ -18,10 +18,10 @@ import {
   updateSeoSchema,
 } from "./posts.schema";
 import z from "zod";
-import { handleError } from "@/utils/handle-error";
+import { handleError } from "@/lib/utils/handle-error";
 
-import { db } from "@/db/db";
-import { postSeoTable, postTable } from "@/db/schema";
+import { db } from "@/lib/db/db";
+import { postSeoTable, postTable } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import {
   requirePermission,

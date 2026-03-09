@@ -1,4 +1,4 @@
-import { Action, Resource } from "@/auth/permissions";
+import { Action, Resource } from "@/features/auth/permissions";
 import { auth } from "@/lib/better-auth/auth";
 import { headers } from "next/headers";
 

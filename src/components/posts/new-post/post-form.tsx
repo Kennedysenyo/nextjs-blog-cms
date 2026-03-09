@@ -5,11 +5,11 @@ import { Spinner } from "../../ui/spinner";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { MarkdownEditor } from "./markdown-editor";
 import { ImageUploader } from "./image-uploader";
-import { slugify } from "@/utils/slugify";
+import { slugify } from "@/lib/utils/slugify";
 
-import { capitalizeText } from "@/utils/capitalize-text";
+import { capitalizeText } from "@/lib/utils/capitalize-text";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import {
   CreatePostInput,
   CreatePostInputResponseType,

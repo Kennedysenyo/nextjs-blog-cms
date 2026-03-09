@@ -1,9 +1,14 @@
-import { sendEmail } from "@/actions/emails/email-verification";
+import { sendEmail } from "@/features/auth/emails/email-verification";
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 
 import { admin } from "better-auth/plugins";
-import { adminRole, editorRole, fullAc, userRole } from "@/auth/permissions";
+import {
+  adminRole,
+  editorRole,
+  fullAc,
+  userRole,
+} from "@/features/auth/permissions";
 import { Pool } from "pg";
 
 const dbUrl = process.env.DATABASE_URL;

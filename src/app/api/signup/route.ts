@@ -12,7 +12,7 @@ export const GET = async () => {
       },
     });
 
-    console.log(data);
+    // console.log(data);
 
     console.log("Function call returned ...");
 

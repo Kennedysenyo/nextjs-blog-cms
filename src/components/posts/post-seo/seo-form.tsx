@@ -7,7 +7,7 @@ import {
   CreateSeoInput,
   SeoFormResponseType,
 } from "@/features/posts/posts.types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";

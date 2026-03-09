@@ -8,7 +8,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "./ui/breadcrumb";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 export interface BreadCrumbType {
   id: number;
@@ -32,7 +32,7 @@ export const BreadCrumb = ({ urlList }: BreadCrumbProps) => {
                 className={cn(
                   "hover:underline",
                   pathname === link.url && " opacity-70  pointer-events-none",
-                  pathname !== link.url && "text-brand-blue"
+                  pathname !== link.url && "text-brand-blue",
                 )}
                 href={link.url}
               >
