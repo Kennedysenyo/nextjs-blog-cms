@@ -11,6 +11,19 @@ Write posts in Markdown, store the raw content in the database, and render it in
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
+## Live Demo
+
+Try the application here:
+
+🔗 [https://websendor-blog.kencoding.dev/](https://websendor-blog.kencoding.dev/)
+
+### Demo Account
+
+Use the following credentials to explore the application:
+
+Email: [testing@user.com](mailto:testing@user.com)
+Password: testing1234
+
 ## Features
 
 - Markdown-based blog writing
@@ -180,3 +193,13 @@ This design keeps the database content portable and preserves the original Markd
 - Detects media and file links and renders them based on content type
 - Separates content persistence from frontend presentation logic
 - Supports reusable rendering logic for any application consuming the same content source
+
+## Contributing
+
+Contributions are welcome. If you would like to improve the project, feel free to fork the repository and submit a pull request.
+
+## Author
+
+Kennedy Senyo
+
+GitHub: https://github.com/kennedysenyo
