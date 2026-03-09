@@ -39,7 +39,7 @@ export const createPostSchema = insertPostSchema
         error: (iss) =>
           iss.input?.length === 0
             ? "Excerpt is required"
-            : "Excerpt must be < 120 characters",
+            : "Excerpt must be > 120 characters",
       })
       .max(160, "Excerpt must be between 160 and 120 characters"),
     featuredImage: z.url(),
