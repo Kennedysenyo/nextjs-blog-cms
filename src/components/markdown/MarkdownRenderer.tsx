@@ -6,7 +6,6 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 
-import { MediaProcessor } from "@/processors/media-processor";
 import type { MediaConfig } from "@/types/markdown";
 
 import { MarkdownImage } from "./MediaComponents/MarkdownImage";
@@ -17,6 +16,7 @@ import { ExternalLink } from "./MediaComponents/ExternalLink";
 
 import { remarkMediaEmbedder } from "@/lib/remark/remark-media-embedder";
 import { markdownSchema } from "@/lib/markdown/sanitize";
+import { MediaProcessor } from "@/lib/processors/media-processor";
 
 interface MarkdownRendererProps {
   content: string;

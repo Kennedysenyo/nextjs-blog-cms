@@ -1,6 +1,5 @@
-// lib/remark-media-embedder.ts
 import { visit } from "unist-util-visit";
-import { MediaProcessor } from "@/processors/media-processor";
+import { MediaProcessor } from "../processors/media-processor";
 
 /**
  * Conservative URL matcher:
