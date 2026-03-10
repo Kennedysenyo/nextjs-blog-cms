@@ -87,7 +87,8 @@ export const fetchMetadataByPostId = async (id: string) => {
         metaDescription: postSeoTable.metaDescription,
         keywords: postSeoTable.keywords,
       })
-      .from(postSeoTable);
+      .from(postSeoTable)
+      .where(eq(postSeoTable.postId, id));
     return metadata;
   } catch {
     notFound();

@@ -1,7 +1,8 @@
 import { FormPageHeader } from "@/components/form-page-header";
 import { SEOForm } from "@/components/posts/post-seo/seo-form";
+import { requireSession } from "@/features/auth/authorize";
 import { fetchMetadataByPostId } from "@/features/posts/posts.queries";
-import { requireSession } from "@/lib/better-auth/server-auth";
+
 import { redirect } from "next/navigation";
 
 export default async function SeoPage({
